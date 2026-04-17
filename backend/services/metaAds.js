@@ -82,6 +82,7 @@ async function createAdSet({ campaignId, name, budget, startTime, endTime, netwo
       billing_event: 'IMPRESSIONS',
       optimization_goal: 'REACH',
       status: 'PAUSED',
+      is_adset_budget_sharing_enabled: 'false',
       targeting: JSON.stringify({ geo_locations: { countries: ['BR'] } }),
       access_token: TOKEN,
       ...placements[network] || placements.both,
