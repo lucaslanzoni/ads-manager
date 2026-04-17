@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 const FORMATS = {
-  feed:    { width: 1080, height: 1080,  headlineSize: 72 },
+  feed:    { width: 1080, height: 1350,  headlineSize: 72 },
   stories: { width: 1080, height: 1920,  headlineSize: 88 },
 };
 
