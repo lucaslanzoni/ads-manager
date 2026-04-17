@@ -9,12 +9,14 @@ function toBase64(filePath) {
   return fs.readFileSync(abs).toString('base64');
 }
 
+const MIME = { '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp' };
+
 function photoContent(photoIds) {
   return photoIds.map(id => ({
     type: 'image',
     source: {
       type: 'base64',
-      media_type: 'image/jpeg',
+      media_type: MIME[path.extname(id).toLowerCase()] || 'image/jpeg',
       data: toBase64(path.join(__dirname, '../uploads', id)),
     },
   }));
