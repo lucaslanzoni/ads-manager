@@ -1,4 +1,4 @@
-const API = 'http://localhost:3001';
+const API = 'https://ads-manager-6ijz.onrender.com';
 
 let state = {
   photoIds: [],
