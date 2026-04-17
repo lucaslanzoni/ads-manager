@@ -145,6 +145,96 @@ async function regenerate() {
   await generateImages();
 }
 
+// --- Datepicker ---
+const calState = {
+  start: { date: null, viewing: new Date() },
+  end:   { date: null, viewing: new Date() },
+};
+
+const MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const DAYS   = ['D','S','T','Q','Q','S','S'];
+
+function renderCalendar(which) {
+  const cal     = document.getElementById(`${which}-calendar`);
+  const s       = calState[which];
+  const viewing = s.viewing;
+  const today   = new Date(); today.setHours(0,0,0,0);
+
+  const y = viewing.getFullYear();
+  const m = viewing.getMonth();
+  const first = new Date(y, m, 1).getDay();
+  const days  = new Date(y, m + 1, 0).getDate();
+
+  let html = `
+    <div class="cal-header">
+      <button class="cal-nav" onclick="shiftMonth('${which}',-1)">‹</button>
+      <span>${MONTHS[m]} ${y}</span>
+      <button class="cal-nav" onclick="shiftMonth('${which}',1)">›</button>
+    </div>
+    <div class="cal-grid">
+      ${DAYS.map(d => `<div class="cal-day-name">${d}</div>`).join('')}
+  `;
+
+  for (let i = 0; i < first; i++) {
+    const d = new Date(y, m, -(first - i - 1));
+    html += `<div class="cal-day other-month">${d.getDate()}</div>`;
+  }
+
+  for (let d = 1; d <= days; d++) {
+    const date = new Date(y, m, d);
+    const isToday    = date.getTime() === today.getTime();
+    const isSelected = s.date && date.getTime() === s.date.getTime();
+    const isPast     = which === 'start' && date < today;
+    const isBeforeStart = which === 'end' && calState.start.date && date < calState.start.date;
+    const disabled   = isPast || isBeforeStart;
+    const cls = ['cal-day', isToday && 'today', isSelected && 'selected', disabled && 'disabled'].filter(Boolean).join(' ');
+    html += `<div class="${cls}" onclick="selectDate('${which}',${y},${m},${d})">${d}</div>`;
+  }
+
+  html += '</div>';
+  cal.innerHTML = html;
+}
+
+function shiftMonth(which, delta) {
+  const s = calState[which];
+  s.viewing = new Date(s.viewing.getFullYear(), s.viewing.getMonth() + delta, 1);
+  renderCalendar(which);
+}
+
+function selectDate(which, y, m, d) {
+  const date = new Date(y, m, d);
+  calState[which].date = date;
+
+  const label = document.getElementById(`${which}-date-label`);
+  label.textContent = date.toLocaleDateString('pt-BR');
+  label.classList.remove('placeholder');
+
+  closeCalendars();
+}
+
+function toggleCalendar(which) {
+  const cal    = document.getElementById(`${which}-calendar`);
+  const input  = document.getElementById(`${which}-date-input`);
+  const isOpen = cal.classList.contains('open');
+  closeCalendars();
+  if (!isOpen) {
+    renderCalendar(which);
+    cal.classList.add('open');
+    input.classList.add('open');
+  }
+}
+
+function closeCalendars() {
+  ['start','end'].forEach(w => {
+    document.getElementById(`${w}-calendar`)?.classList.remove('open');
+    document.getElementById(`${w}-date-input`)?.classList.remove('open');
+  });
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.datepicker-wrap')) closeCalendars();
+});
+
 function showPublish() {
   if (state.audience) {
     const box = document.getElementById('audience-suggestion');
@@ -159,13 +249,13 @@ async function publishAds() {
   const pageId      = document.getElementById('page-id').value.trim();
   const network     = document.getElementById('network').value;
   const dailyBudget = parseFloat(document.getElementById('daily-budget').value);
-  const startDate   = document.getElementById('start-date').value;
-  const endDate     = document.getElementById('end-date').value;
+  const startDate   = calState.start.date;
+  const endDate     = calState.end.date;
   const brandName   = document.getElementById('brand-name').value.trim();
 
   if (!pageId)      return setStatus('status-publish', 'Informe o Page ID.', 'error');
   if (!dailyBudget) return setStatus('status-publish', 'Informe o orçamento diário.', 'error');
-  if (!startDate || !endDate) return setStatus('status-publish', 'Informe as datas de veiculação.', 'error');
+  if (!startDate || !endDate) return setStatus('status-publish', 'Selecione as datas de veiculação.', 'error');
 
   document.getElementById('btn-publish').disabled = true;
   setStatus('status-publish', 'Publicando campanha no Meta Ads...');
@@ -180,8 +270,8 @@ async function publishAds() {
       brandName,
       network,
       dailyBudget,
-      startDate: new Date(startDate).toISOString(),
-      endDate: new Date(endDate).toISOString(),
+      startDate: startDate.toISOString(),
+      endDate: endDate.toISOString(),
       pageId,
     }),
   });
