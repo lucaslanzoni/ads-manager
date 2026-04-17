@@ -4,14 +4,14 @@ const { publishCampaign } = require('../services/metaAds');
 const router = express.Router();
 
 router.post('/', async (req, res) => {
-  const { sessionId, images, brief, brandName, network, dailyBudget, startDate, endDate, pageId } = req.body;
+  const { sessionId, images, brief, brandName, network, dailyBudget, startDate, endDate, pageId, captions = {} } = req.body;
 
   if (!sessionId || !images || !brief || !brandName || !network || !dailyBudget || !startDate || !endDate || !pageId) {
     return res.status(400).json({ error: 'Campos obrigatórios faltando' });
   }
 
   try {
-    const result = await publishCampaign({ sessionId, images, brief, brandName, network, dailyBudget, startDate, endDate, pageId });
+    const result = await publishCampaign({ sessionId, images, brief, brandName, network, dailyBudget, startDate, endDate, pageId, captions });
     res.json(result);
   } catch (err) {
     console.error(err);

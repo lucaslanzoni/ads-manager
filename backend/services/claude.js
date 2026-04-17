@@ -78,6 +78,7 @@ Retorne EXATAMENTE este JSON (sem markdown, sem explicações):
       "photoIndex": 0,
       "headline": "...",
       "copy": "...",
+      "caption": "...",
       "align": "bottom",
       "logoVisible": true
     },
@@ -86,6 +87,7 @@ Retorne EXATAMENTE este JSON (sem markdown, sem explicações):
       "photoIndex": 1,
       "headline": "...",
       "copy": "...",
+      "caption": "...",
       "align": "bottom",
       "logoVisible": false
     }
@@ -103,6 +105,7 @@ Regras CRÍTICAS de posicionamento:
 - photoIndex: índice da melhor foto para cada variação (0-based, máximo ${photoIds.length - 1})
 - headline: máximo 6 palavras, impactante
 - copy: máximo 12 palavras, complementa a headline
+- caption: legenda do post no feed, máximo 280 caracteres, tom adequado ao segmento, inclua hashtags relevantes e emojis se adequado
 - Se não houver fotos suficientes para 2 variações diferentes, repita o índice 0
 - overlayOpacity entre 0.2 e 0.6 dependendo do contraste necessário`,
         },

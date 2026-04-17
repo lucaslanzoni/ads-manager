@@ -188,6 +188,36 @@ function renderPreviews(images) {
     card.innerHTML = `<img src="${API}${img.url}" /><div class="ad-card-label"><span class="var">${img.variationId.toUpperCase()}</span><span class="fmt">${img.format}</span></div>`;
     grid.appendChild(card);
   });
+
+  // Render caption editors (one per unique variation)
+  const seen = new Set();
+  const variations = state.brief?.variations || [];
+  const captionsEl = document.getElementById('captions-section');
+  captionsEl.innerHTML = '';
+
+  variations.forEach(v => {
+    if (seen.has(v.id)) return;
+    seen.add(v.id);
+    const caption = v.caption || '';
+    const block = document.createElement('div');
+    block.className = 'caption-block';
+    block.innerHTML = `
+      <div class="caption-label">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 3.5h9M2 6.5h7M2 9.5h5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        Legenda <span class="var-badge">${v.id.toUpperCase()}</span>
+      </div>
+      <textarea class="caption-textarea" id="caption-${v.id}" maxlength="2200" oninput="updateCharCount('${v.id}',this.value)">${caption}</textarea>
+      <div class="caption-char-count" id="caption-count-${v.id}">${caption.length} / 280</div>
+    `;
+    captionsEl.appendChild(block);
+  });
+}
+
+function updateCharCount(id, value) {
+  const el = document.getElementById(`caption-count-${id}`);
+  if (!el) return;
+  el.textContent = `${value.length} / 280`;
+  el.classList.toggle('over', value.length > 280);
 }
 
 async function regenerate() {
@@ -327,6 +357,12 @@ async function publishAds() {
   document.getElementById('btn-publish').disabled = true;
   setStatus('status-publish', 'Publicando campanha no Meta Ads...');
 
+  const captions = {};
+  (state.brief?.variations || []).forEach(v => {
+    const el = document.getElementById(`caption-${v.id}`);
+    captions[v.id] = el ? el.value.trim() : (v.caption || '');
+  });
+
   const res = await fetch(`${API}/api/publish`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -340,6 +376,7 @@ async function publishAds() {
       startDate: startDate.toISOString(),
       endDate: endDate.toISOString(),
       pageId,
+      captions,
     }),
   });
 

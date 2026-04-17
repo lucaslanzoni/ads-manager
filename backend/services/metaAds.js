@@ -122,7 +122,7 @@ async function createAd({ adSetId, creativeId, name }) {
   return result.id;
 }
 
-async function publishCampaign({ sessionId, images, brief, brandName, network, dailyBudget, startDate, endDate, pageId }) {
+async function publishCampaign({ sessionId, images, brief, brandName, network, dailyBudget, startDate, endDate, pageId, captions = {} }) {
   const campaignId = await createCampaign({ name: `${brandName} — ${new Date().toLocaleDateString('pt-BR')}` });
   const adSetId    = await createAdSet({ campaignId, name: `${brandName} AdSet`, budget: dailyBudget, startTime: startDate, endTime: endDate, network });
 
@@ -132,9 +132,10 @@ async function publishCampaign({ sessionId, images, brief, brandName, network, d
     const feedImage = images.find(i => i.variationId === variation.id && i.format === 'feed');
     if (!feedImage) continue;
 
+    const caption    = captions[variation.id] || variation.caption || variation.copy || '';
     const imagePath  = path.join(__dirname, '../output', sessionId, feedImage.filename);
     const imageHash  = await uploadImage(imagePath);
-    const creativeId = await createAdCreative({ name: `${brandName} ${variation.id}`, imageHash, headline: variation.headline, body: variation.copy, pageId });
+    const creativeId = await createAdCreative({ name: `${brandName} ${variation.id}`, imageHash, headline: variation.headline, body: caption, pageId });
     const adId       = await createAd({ adSetId, creativeId, name: `${brandName} ${variation.id} Ad` });
 
     ads.push({ variationId: variation.id, adId });
