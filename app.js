@@ -18,7 +18,22 @@ function toggleCopy(el) {
 // inicia o toggle de copy como selecionado (checked por padrão)
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('include-copy-toggle').classList.add('selected');
+  initFontPicker();
 });
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('#font-picker')) {
+    document.getElementById('font-dropdown')?.classList.remove('open');
+  }
+});
+
+const FONTS = [
+  'Inter','Montserrat','Poppins','Raleway','Work Sans','DM Sans','Space Grotesk','Syne',
+  'Plus Jakarta Sans','Bricolage Grotesque','Urbanist','Nunito','Lato','Source Sans 3',
+  'PT Sans','Roboto Condensed','Barlow Condensed','Exo 2','Oswald','Bebas Neue',
+  'Fjalla One','Archivo Black','Libre Baskerville','Merriweather','Cormorant Garamond',
+  'Crimson Pro','DM Serif Display','Fraunces','Bitter','Playfair Display',
+];
 
 let state = {
   photoIds: [],
@@ -26,7 +41,39 @@ let state = {
   brief: null,
   sessionId: null,
   images: [],
+  fontFamily: 'Inter',
 };
+
+function initFontPicker() {
+  const dropdown = document.getElementById('font-dropdown');
+  dropdown.innerHTML = FONTS.map(f =>
+    `<div class="font-option${f === 'Inter' ? ' selected' : ''}" style="font-family:'${f}',sans-serif" data-font="${f}" onclick="selectFont('${f}')">${f}</div>`
+  ).join('');
+}
+
+function openFontDropdown() {
+  document.getElementById('font-dropdown').classList.add('open');
+}
+
+function filterFonts(q) {
+  const search = q.toLowerCase();
+  document.querySelectorAll('.font-option').forEach(el => {
+    el.classList.toggle('hidden', !el.dataset.font.toLowerCase().includes(search));
+  });
+  document.getElementById('font-dropdown').classList.add('open');
+}
+
+function selectFont(name) {
+  state.fontFamily = name;
+  document.getElementById('font-search').value = '';
+  document.getElementById('font-selected-preview').textContent = name;
+  document.getElementById('font-selected-preview').style.fontFamily = `'${name}', sans-serif`;
+  document.querySelectorAll('.font-option').forEach(el =>
+    el.classList.toggle('selected', el.dataset.font === name)
+  );
+  document.getElementById('font-dropdown').classList.remove('open');
+  filterFonts('');
+}
 
 // Preview de fotos
 document.getElementById('photos-input').addEventListener('change', e => {
@@ -112,7 +159,7 @@ async function generateImages() {
   const genRes = await fetch(`${API}/api/generate`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ brief: state.brief, photoIds: state.photoIds, logoId: state.logoId, includeCopy: state.includeCopy }),
+    body: JSON.stringify({ brief: state.brief, photoIds: state.photoIds, logoId: state.logoId, includeCopy: state.includeCopy, fontFamily: state.fontFamily }),
   });
   const generated = await genRes.json();
 

@@ -21,7 +21,7 @@ function renderTemplate(html, vars) {
     );
 }
 
-async function generateVariations({ sessionId, variations, photoIds, logoId, palette }) {
+async function generateVariations({ sessionId, variations, photoIds, logoId, palette, fontFamily = 'Inter' }) {
   const outputBase = path.join(__dirname, '../output', sessionId);
   fs.mkdirSync(outputBase, { recursive: true });
 
@@ -39,6 +39,9 @@ async function generateVariations({ sessionId, variations, photoIds, logoId, pal
 
       const overlayGradient = `linear-gradient(to top, rgba(${palette.overlay},${palette.overlayOpacity}) 0%, rgba(${palette.overlay},0) 60%)`;
 
+      const fontSlug = fontFamily.replace(/ /g, '+');
+      const fontLink = `<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=${fontSlug}:wght@700&display=swap">`;
+
       const html = renderTemplate(templateHtml, {
         photo:           toFileUrl(photoPath),
         logo:            logoPath && variation.logoVisible ? toFileUrl(logoPath) : '',
@@ -49,7 +52,8 @@ async function generateVariations({ sessionId, variations, photoIds, logoId, pal
         overlay:         'true',
         headlineSize,
         contentAlign:    { top: 'flex-start', center: 'center', bottom: 'flex-end' }[variation.align] || 'flex-end',
-        fontFamily:      'system-ui, sans-serif',
+        fontFamily:      `'${fontFamily}', sans-serif`,
+        fontLink,
       });
 
       const tmpHtml = path.join(outputBase, `_tmp_${variation.id}_${fmt}.html`);
@@ -58,9 +62,12 @@ async function generateVariations({ sessionId, variations, photoIds, logoId, pal
       await page.setViewport({ width, height, deviceScaleFactor: 1 });
       await page.goto(`file://${tmpHtml}`, { waitUntil: 'domcontentloaded', timeout: 60000 });
       await page.evaluate(() =>
-        Promise.all(Array.from(document.images).map(img =>
-          img.complete ? Promise.resolve() : new Promise(r => { img.onload = r; img.onerror = r; })
-        ))
+        Promise.all([
+          ...Array.from(document.images).map(img =>
+            img.complete ? Promise.resolve() : new Promise(r => { img.onload = r; img.onerror = r; })
+          ),
+          document.fonts.ready,
+        ])
       );
       fs.unlinkSync(tmpHtml);
 

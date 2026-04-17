@@ -5,7 +5,7 @@ const { generateVariations } = require('../services/generator');
 const router = express.Router();
 
 router.post('/', async (req, res) => {
-  const { brief, photoIds, logoId } = req.body;
+  const { brief, photoIds, logoId, fontFamily } = req.body;
 
   if (!brief || !photoIds?.length) {
     return res.status(400).json({ error: 'brief e photoIds são obrigatórios' });
@@ -19,6 +19,7 @@ router.post('/', async (req, res) => {
       photoIds,
       logoId: logoId || null,
       palette: brief.palette,
+      fontFamily: fontFamily || 'Inter',
     });
 
     res.json({ sessionId, images });

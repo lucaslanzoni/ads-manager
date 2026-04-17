@@ -7,7 +7,7 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23c8ff00'/%3E%3Cg stroke='%230a0a0c' stroke-width='2' stroke-linecap='round'%3E%3Cline x1='16' y1='6' x2='16' y2='12'/%3E%3Cline x1='16' y1='20' x2='16' y2='26'/%3E%3Cline x1='6' y1='16' x2='12' y2='16'/%3E%3Cline x1='20' y1='16' x2='26' y2='16'/%3E%3Cline x1='8.9' y1='8.9' x2='13.1' y2='13.1'/%3E%3Cline x1='18.9' y1='18.9' x2='23.1' y2='23.1'/%3E%3Cline x1='23.1' y1='8.9' x2='18.9' y2='13.1'/%3E%3Cline x1='13.1' y1='18.9' x2='8.9' y2='23.1'/%3E%3C/g%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Montserrat:wght@700&family=Playfair+Display:wght@700&family=Poppins:wght@700&family=Raleway:wght@700&family=Bebas+Neue&family=Oswald:wght@700&family=Lato:wght@700&family=Nunito:wght@700&family=DM+Sans:wght@700&family=Space+Grotesk:wght@700&family=Syne:wght@700&family=Plus+Jakarta+Sans:wght@700&family=Bricolage+Grotesque:wght@700&family=Urbanist:wght@700&family=Archivo+Black&family=Barlow+Condensed:wght@700&family=Exo+2:wght@700&family=Fjalla+One&family=Work+Sans:wght@700&family=Libre+Baskerville:wght@700&family=Merriweather:wght@700&family=Cormorant+Garamond:wght@700&family=Crimson+Pro:wght@700&family=DM+Serif+Display&family=Fraunces:wght@700&family=Bitter:wght@700&family=Roboto+Condensed:wght@700&family=Source+Sans+3:wght@700&family=PT+Sans:wght@700&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg:        rgba(12,12,14,0.82);
@@ -430,6 +430,80 @@
     /* ── AUDIENCE BOX ── */
     .publish-section { display: none; }
 
+    /* ── FONT PICKER ── */
+    .font-picker { position: relative; }
+
+    .font-search-input {
+      width: 100%;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      padding: 11px 14px 11px 38px;
+      outline: none;
+      transition: border-color .15s;
+    }
+
+    .font-search-input:focus { border-color: var(--border-active); }
+    .font-search-input::placeholder { color: var(--text-3); }
+
+    .font-search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      opacity: 0.35;
+      pointer-events: none;
+    }
+
+    .font-selected-preview {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 13px;
+      color: var(--accent);
+      font-weight: 600;
+      pointer-events: none;
+      max-width: 160px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .font-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0; right: 0;
+      z-index: 200;
+      background: #16161c;
+      border: 1px solid var(--border-hover);
+      border-radius: var(--radius-sm);
+      max-height: 260px;
+      overflow-y: auto;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.6);
+    }
+
+    .font-dropdown.open { display: block; }
+
+    .font-option {
+      padding: 10px 14px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-2);
+      transition: background .1s, color .1s;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .font-option:last-child { border-bottom: none; }
+    .font-option:hover { background: var(--surface-2); color: var(--text); }
+    .font-option.selected { color: var(--accent); background: var(--accent-dim); }
+    .font-option.hidden { display: none; }
+
     .audience-box {
       background: var(--accent-dim);
       border: 1px solid rgba(200,255,0,0.18);
@@ -719,6 +793,20 @@
           <div class="check"></div>
           <span>Incluir headline e copy nas artes</span>
         </label>
+      </div>
+
+      <!-- Font picker -->
+      <div class="field">
+        <div class="field-label">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 3h10M7 3v8M4 11h6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Fonte da arte
+        </div>
+        <div class="font-picker" id="font-picker">
+          <svg class="font-search-icon" width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4" stroke="currentColor" stroke-width="1.3"/><path d="M10 10l2.5 2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          <input class="font-search-input" id="font-search" type="text" placeholder="Buscar fonte…" autocomplete="off" oninput="filterFonts(this.value)" onfocus="openFontDropdown()" />
+          <span class="font-selected-preview" id="font-selected-preview">Inter</span>
+          <div class="font-dropdown" id="font-dropdown"></div>
+        </div>
       </div>
 
       <button class="btn btn-primary" id="btn-analyze" onclick="startAnalysis()">

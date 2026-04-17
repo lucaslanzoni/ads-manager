@@ -4,6 +4,23 @@ const path = require('path');
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
+function luminance(hex) {
+  const h = hex.replace('#', '');
+  const r = parseInt(h.slice(0,2),16)/255;
+  const g = parseInt(h.slice(2,4),16)/255;
+  const b = parseInt(h.slice(4,6),16)/255;
+  return 0.2126*r + 0.7152*g + 0.0722*b;
+}
+
+// Com overlay escuro, o fundo efetivo fica mais escuro — texto branco quase sempre correto.
+// Sem overlay ou fundo claro, usa preto para garantir contraste.
+function contrastColor(primaryHex, overlayOpacity) {
+  const lum = luminance(primaryHex || '#000000');
+  const opacity = parseFloat(overlayOpacity || 0);
+  const effectiveLum = lum * (1 - opacity);
+  return effectiveLum > 0.35 ? '#0a0a0c' : '#ffffff';
+}
+
 function toBase64(filePath) {
   const abs = path.isAbsolute(filePath) ? filePath : path.join(__dirname, '..', filePath);
   return fs.readFileSync(abs).toString('base64');
@@ -95,6 +112,10 @@ Regras CRÍTICAS de posicionamento:
 
   const text   = response.content[0].text.trim().replace(/^```json\s*/i, '').replace(/```\s*$/, '');
   const parsed = JSON.parse(text);
+
+  // garante contraste mínimo entre texto e fundo
+  parsed.palette.text = contrastColor(parsed.palette.primary, parsed.palette.overlayOpacity);
+
   return { brief: { palette: parsed.palette, variations: parsed.variations }, audience: parsed.audience };
 }
 
