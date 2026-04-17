@@ -202,6 +202,11 @@
 
     .field-label svg { opacity: 0.5; flex-shrink: 0; }
 
+    input[type="date"] {
+      color-scheme: dark;
+      cursor: pointer;
+    }
+
     input[type="text"],
     input[type="url"],
     input[type="number"],
@@ -676,103 +681,6 @@
 
     .total-box .total-value.has-value { color: var(--accent); }
 
-    /* ── DATEPICKER ── */
-    .datepicker-wrap { position: relative; }
-
-    .datepicker-input {
-      width: 100%;
-      background: rgba(0,0,0,0.3);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      color: var(--text);
-      font-size: 14px;
-      padding: 11px 14px;
-      cursor: pointer;
-      user-select: none;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      transition: border-color .15s;
-    }
-
-    .datepicker-input:hover { border-color: var(--border-hover); }
-    .datepicker-input.open { border-color: var(--border-active); background: rgba(0,0,0,0.45); }
-    .datepicker-input .placeholder { color: var(--text-3); }
-    .datepicker-input svg { flex-shrink: 0; opacity: 0.35; }
-
-    .calendar {
-      display: none;
-      position: absolute;
-      top: calc(100% + 6px);
-      left: 0;
-      z-index: 100;
-      background: #16161c;
-      border: 1px solid var(--border-hover);
-      border-radius: var(--radius-sm);
-      padding: 16px;
-      width: 264px;
-      box-shadow: 0 12px 32px rgba(0,0,0,0.6);
-    }
-
-    .calendar.open { display: block; }
-
-    .cal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 12px;
-    }
-
-    .cal-header span {
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: -.01em;
-    }
-
-    .cal-nav {
-      background: none;
-      border: none;
-      color: var(--text-2);
-      font-size: 16px;
-      cursor: pointer;
-      padding: 3px 8px;
-      border-radius: 4px;
-      line-height: 1;
-      transition: background .1s, color .1s;
-    }
-
-    .cal-nav:hover { background: var(--surface-2); color: var(--text); }
-
-    .cal-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 2px;
-    }
-
-    .cal-day-name {
-      text-align: center;
-      font-size: 10px;
-      font-family: 'JetBrains Mono', monospace;
-      color: var(--text-3);
-      padding: 4px 0 6px;
-    }
-
-    .cal-day {
-      text-align: center;
-      font-size: 12.5px;
-      padding: 6px 2px;
-      border-radius: 5px;
-      cursor: pointer;
-      color: var(--text-2);
-      transition: background .1s, color .1s;
-    }
-
-    .cal-day:hover { background: var(--surface-2); color: var(--text); }
-    .cal-day.today { color: var(--text); font-weight: 700; }
-    .cal-day.selected { background: var(--accent); color: #000; font-weight: 700; }
-    .cal-day.other-month { color: var(--text-3); opacity: 0.4; }
-    .cal-day.disabled { color: var(--text-3); opacity: 0.2; cursor: default; pointer-events: none; }
-
     /* ── DIVIDER ── */
     .divider {
       height: 1px;
@@ -1110,26 +1018,14 @@
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="3" width="12" height="10" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M4.5 1v3M9.5 1v3M1 6.5h12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
             Data de início *
           </div>
-          <div class="datepicker-wrap">
-            <div class="datepicker-input" id="start-date-input" onclick="toggleCalendar('start')">
-              <span class="placeholder" id="start-date-label">Selecionar data</span>
-              <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="1" y="2.5" width="13" height="11" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M5 1v3M10 1v3M1 6.5h13" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-            </div>
-            <div class="calendar" id="start-calendar"></div>
-          </div>
+          <input type="date" id="start-date" onchange="onStartDateChange()" />
         </div>
         <div class="field">
           <div class="field-label">
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="3" width="12" height="10" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M4.5 1v3M9.5 1v3M1 6.5h12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
             Data de término *
           </div>
-          <div class="datepicker-wrap">
-            <div class="datepicker-input" id="end-date-input" onclick="toggleCalendar('end')">
-              <span class="placeholder" id="end-date-label">Selecionar data</span>
-              <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="1" y="2.5" width="13" height="11" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M5 1v3M10 1v3M1 6.5h13" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-            </div>
-            <div class="calendar" id="end-calendar"></div>
-          </div>
+          <input type="date" id="end-date" onchange="updateTotal()" />
         </div>
       </div>
 
