@@ -210,6 +210,7 @@ function selectDate(which, y, m, d) {
   label.classList.remove('placeholder');
 
   closeCalendars();
+  updateTotal();
 }
 
 function toggleCalendar(which) {
@@ -222,6 +223,22 @@ function toggleCalendar(which) {
     cal.classList.add('open');
     input.classList.add('open');
   }
+}
+
+function updateTotal() {
+  const budget = parseFloat(document.getElementById('daily-budget').value);
+  const start  = calState.start.date;
+  const end    = calState.end.date;
+  const el     = document.getElementById('total-budget');
+
+  if (!budget || !start || !end) { el.textContent = '—'; el.style.color = '#aaa'; return; }
+
+  const days  = Math.round((end - start) / 86400000) + 1;
+  const total = budget * days;
+
+  el.textContent = `R$ ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+  el.style.color = '#fff';
+  el.title = `${days} dia${days > 1 ? 's' : ''} × R$ ${budget.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
 }
 
 function closeCalendars() {
