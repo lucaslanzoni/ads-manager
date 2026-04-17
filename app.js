@@ -143,7 +143,6 @@ async function regenerate() {
 }
 
 function showPublish() {
-  document.getElementById('publish-section').style.display = 'block';
   document.getElementById('step-publish').style.display = 'block';
   document.getElementById('step-publish').scrollIntoView({ behavior: 'smooth' });
 }
