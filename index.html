@@ -48,6 +48,34 @@
 
     label { display: block; font-size: 13px; color: #aaa; margin-bottom: 6px; }
 
+    textarea {
+      width: 100%;
+      background: #111;
+      border: 1px solid #333;
+      border-radius: 8px;
+      color: #f0f0f0;
+      font-size: 14px;
+      padding: 10px 14px;
+      outline: none;
+      transition: border-color 0.15s;
+      resize: vertical;
+      min-height: 90px;
+      font-family: inherit;
+    }
+
+    textarea:focus { border-color: #555; }
+
+    .audience-box {
+      background: #111;
+      border: 1px solid #2a2a2a;
+      border-radius: 8px;
+      padding: 16px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #ccc;
+      white-space: pre-wrap;
+    }
+
     input[type="text"], input[type="url"], input[type="number"], input[type="date"], select {
       width: 100%;
       background: #111;
@@ -252,6 +280,11 @@
       </div>
 
       <div class="field">
+        <label>Briefing da campanha (opcional)</label>
+        <textarea id="briefing" placeholder="Descreva o objetivo da campanha, público-alvo desejado, tom de comunicação, sazonalidade ou qualquer contexto relevante. Ex: lançamento de coleção de verão para jovens de 18-30 anos que curtem moda sustentável."></textarea>
+      </div>
+
+      <div class="field">
         <label>Copy na peça</label>
         <label class="checkbox-item" id="include-copy-toggle" onclick="toggleCopy(this)" style="max-width:260px">
           <input type="checkbox" id="include-copy" checked />
@@ -280,6 +313,11 @@
       <div class="step-header">
         <div class="step-number">3</div>
         <div class="step-title">Configurar publicação</div>
+      </div>
+
+      <div class="field" id="audience-suggestion-field" style="display:none">
+        <label>Sugestão de público (gerada pela IA)</label>
+        <div class="audience-box" id="audience-suggestion"></div>
       </div>
 
       <div class="field">

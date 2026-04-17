@@ -22,9 +22,10 @@ function photoContent(photoIds) {
   }));
 }
 
-async function analyzeAndGenerateBrief({ photoIds, brandName, segments, instagramUrl, adLibraryAds, includeCopy = true }) {
+async function analyzeAndGenerateBrief({ photoIds, brandName, segments, instagramUrl, adLibraryAds, includeCopy = true, briefing = '' }) {
   const images = photoContent(photoIds);
 
+  const briefingContext = briefing ? `\n\nBriefing da campanha fornecido pelo cliente:\n"${briefing}"` : '';
   const adExamples = adLibraryAds.length > 0
     ? `\n\nAnúncios em destaque na Biblioteca de Anúncios do Facebook para os segmentos ${segments.join(', ')}:\n${adLibraryAds.map((a, i) => `${i + 1}. Body: "${a.ad_creative_bodies?.[0] ?? ''}" | CTA: "${a.call_to_action_types?.[0] ?? ''}" | Título: "${a.ad_creative_link_titles?.[0] ?? ''}"`).join('\n')}`
     : '';
@@ -40,12 +41,19 @@ async function analyzeAndGenerateBrief({ photoIds, brandName, segments, instagra
           type: 'text',
           text: `Você é um especialista em mídia paga e criação de anúncios para Instagram e Facebook.
 
-Analise as fotos acima para a marca "${brandName}" (segmentos: ${segments.join(', ')}, Instagram: ${instagramUrl}).${adExamples}
+Analise as fotos acima para a marca "${brandName}" (segmentos: ${segments.join(', ')}, Instagram: ${instagramUrl}).${briefingContext}${adExamples}
 
 ${includeCopy ? '' : 'IMPORTANTE: NÃO inclua headline nem copy nas variações — as peças serão somente foto. Deixe headline e copy como strings vazias.\n\n'}Para cada foto, analise ONDE está o sujeito principal (produto, pessoa, objeto) e identifique a ÁREA LIVRE — região sem elementos visuais importantes onde o texto pode aparecer sem sobrepor nada.
 
 Retorne EXATAMENTE este JSON (sem markdown, sem explicações):
 {
+  "audience": {
+    "ageMin": 18,
+    "ageMax": 45,
+    "genders": ["all"],
+    "interests": ["interesse 1", "interesse 2", "interesse 3"],
+    "summary": "Texto descritivo em português explicando o público sugerido e o raciocínio por trás da segmentação."
+  },
   "palette": { "primary": "#hex", "text": "#hex", "overlay": "0,0,0", "overlayOpacity": "0.4" },
   "variations": [
     {
@@ -85,8 +93,9 @@ Regras CRÍTICAS de posicionamento:
     }],
   });
 
-  const text = response.content[0].text.trim().replace(/^```json\s*/i, '').replace(/```\s*$/, '');
-  return JSON.parse(text);
+  const text   = response.content[0].text.trim().replace(/^```json\s*/i, '').replace(/```\s*$/, '');
+  const parsed = JSON.parse(text);
+  return { brief: { palette: parsed.palette, variations: parsed.variations }, audience: parsed.audience };
 }
 
 module.exports = { analyzeAndGenerateBrief };

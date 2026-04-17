@@ -77,16 +77,18 @@ async function startAnalysis() {
   const uploadRes = await fetch(`${API}/api/upload`, { method: 'POST', body: formData });
   const uploaded  = await uploadRes.json();
 
-  state.photoIds   = uploaded.photos.map(p => p.id);
-  state.logoId     = uploaded.logo?.id || null;
+  state.photoIds    = uploaded.photos.map(p => p.id);
+  state.logoId      = uploaded.logo?.id || null;
   state.includeCopy = document.getElementById('include-copy').checked;
+
+  const briefing = document.getElementById('briefing').value.trim();
 
   setStatus('status-analyze', 'Analisando fotos e biblioteca de anúncios...');
 
   const analyzeRes = await fetch(`${API}/api/analyze`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ photoIds: state.photoIds, logoId: state.logoId, brandName, segments, instagramUrl, includeCopy: state.includeCopy }),
+    body: JSON.stringify({ photoIds: state.photoIds, logoId: state.logoId, brandName, segments, instagramUrl, includeCopy: state.includeCopy, briefing }),
   });
   const analyzed = await analyzeRes.json();
 
@@ -96,7 +98,8 @@ async function startAnalysis() {
     return;
   }
 
-  state.brief = analyzed.brief;
+  state.brief    = analyzed.brief;
+  state.audience = analyzed.audience || null;
   setStatus('status-analyze', 'Gerando artes...');
 
   await generateImages();
@@ -143,6 +146,11 @@ async function regenerate() {
 }
 
 function showPublish() {
+  if (state.audience) {
+    const box = document.getElementById('audience-suggestion');
+    box.textContent = state.audience.summary;
+    document.getElementById('audience-suggestion-field').style.display = 'block';
+  }
   document.getElementById('step-publish').style.display = 'block';
   document.getElementById('step-publish').scrollIntoView({ behavior: 'smooth' });
 }
