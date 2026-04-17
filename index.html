@@ -3,252 +3,488 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ads Manager</title>
+  <title>Ads Manager — por Lucas Lanzoni</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg:        rgba(12,12,14,0.82);
+      --surface:   rgba(20,20,24,0.72);
+      --surface-2: rgba(28,28,34,0.80);
+      --border:    rgba(255,255,255,0.08);
+      --border-hover: rgba(255,255,255,0.18);
+      --border-active: rgba(255,255,255,0.55);
+      --text:      #f2f2f4;
+      --text-2:    #8a8a96;
+      --text-3:    #52525e;
+      --accent:    #c8ff00;
+      --accent-dim: rgba(200,255,0,0.12);
+      --radius:    14px;
+      --radius-sm: 8px;
+      --ease:      cubic-bezier(.2,.7,.2,1);
+      --blur:      backdrop-filter: saturate(180%) blur(16px);
+    }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
 
     body {
-      font-family: system-ui, -apple-system, sans-serif;
-      background: #0f0f0f url('bg.jpeg') center center / cover fixed;
-      color: #f0f0f0;
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #0a0a0c url('bg.jpeg') center center / cover fixed;
+      color: var(--text);
       min-height: 100vh;
-      padding: 40px 20px;
+      padding: 0 0 80px;
     }
 
     body::before {
       content: '';
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.72);
+      background: rgba(6,6,10,0.78);
       z-index: 0;
       pointer-events: none;
     }
 
-    .container { position: relative; z-index: 1; }
-
-    .container { max-width: 800px; margin: 0 auto; }
-
-    h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
-    .subtitle { color: #888; font-size: 14px; margin-bottom: 40px; }
-
-    .step {
-      background: #1a1a1a;
-      border: 1px solid #2a2a2a;
-      border-radius: 12px;
-      padding: 28px;
-      margin-bottom: 20px;
+    /* ── HEADER ── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: saturate(180%) blur(16px);
+      -webkit-backdrop-filter: saturate(180%) blur(16px);
+      background: rgba(10,10,14,0.70);
+      border-bottom: 1px solid var(--border);
     }
+
+    .header-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 16px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-mark {
+      width: 30px; height: 30px;
+      background: var(--accent);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .brand-mark svg { display: block; }
+
+    .brand-name {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -.02em;
+      color: var(--text);
+    }
+
+    .brand-sub {
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-3);
+      letter-spacing: .04em;
+    }
+
+    .header-sig {
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-3);
+      letter-spacing: .04em;
+    }
+
+    /* ── LAYOUT ── */
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 48px 28px 0;
+    }
+
+    /* ── PAGE TITLE ── */
+    .page-title {
+      margin-bottom: 40px;
+    }
+
+    .eyebrow {
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 500;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .page-title h1 {
+      font-size: clamp(28px, 4vw, 38px);
+      font-weight: 800;
+      letter-spacing: -.03em;
+      line-height: 1.1;
+      margin-bottom: 8px;
+    }
+
+    .page-title p {
+      font-size: 15px;
+      color: var(--text-2);
+      font-weight: 400;
+    }
+
+    /* ── STEP CARD ── */
+    .step {
+      backdrop-filter: saturate(180%) blur(16px);
+      -webkit-backdrop-filter: saturate(180%) blur(16px);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      margin-bottom: 16px;
+      transition: border-color .2s var(--ease);
+    }
+
+    .step:hover { border-color: var(--border-hover); }
 
     .step-header {
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 20px;
+      gap: 14px;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
     }
 
     .step-number {
-      width: 28px; height: 28px;
-      background: #333;
+      width: 30px; height: 30px;
+      border: 1.5px solid var(--border-hover);
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-size: 13px; font-weight: 600;
+      font-size: 12px;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-2);
       flex-shrink: 0;
+      letter-spacing: 0;
     }
 
-    .step-title { font-size: 16px; font-weight: 600; }
+    .step-title {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -.02em;
+    }
 
-    label { display: block; font-size: 13px; color: #aaa; margin-bottom: 6px; }
+    /* ── FIELDS ── */
+    .field { margin-bottom: 20px; }
 
+    .field-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: var(--text-2);
+      margin-bottom: 8px;
+    }
+
+    .field-label svg { opacity: 0.5; flex-shrink: 0; }
+
+    input[type="text"],
+    input[type="url"],
+    input[type="number"],
+    select,
     textarea {
       width: 100%;
-      background: #111;
-      border: 1px solid #333;
-      border-radius: 8px;
-      color: #f0f0f0;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
       font-size: 14px;
-      padding: 10px 14px;
+      font-family: 'Inter', system-ui, sans-serif;
+      padding: 11px 14px;
       outline: none;
-      transition: border-color 0.15s;
+      transition: border-color .15s var(--ease), background .15s;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--border-active);
+      background: rgba(0,0,0,0.45);
+    }
+
+    input::placeholder, textarea::placeholder { color: var(--text-3); }
+
+    textarea {
       resize: vertical;
-      min-height: 90px;
-      font-family: inherit;
+      min-height: 88px;
+      line-height: 1.5;
     }
 
-    textarea:focus { border-color: #555; }
+    select { appearance: none; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2352525e' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
 
-    .audience-box {
-      background: #111;
-      border: 1px solid #2a2a2a;
-      border-radius: 8px;
-      padding: 16px;
-      font-size: 13px;
-      line-height: 1.6;
-      color: #ccc;
-      white-space: pre-wrap;
-    }
+    select option { background: #1a1a20; }
 
-    input[type="text"], input[type="url"], input[type="number"], input[type="date"], select {
-      width: 100%;
-      background: #111;
-      border: 1px solid #333;
-      border-radius: 8px;
-      color: #f0f0f0;
-      font-size: 14px;
-      padding: 10px 14px;
-      outline: none;
-      transition: border-color 0.15s;
-    }
-
-    input:focus, select:focus { border-color: #555; }
-
-    .field { margin-bottom: 16px; }
-
+    /* ── UPLOAD ── */
     .upload-area {
-      border: 2px dashed #333;
-      border-radius: 10px;
-      padding: 32px;
+      border: 1.5px dashed var(--border-hover);
+      border-radius: var(--radius-sm);
+      padding: 28px;
       text-align: center;
       cursor: pointer;
-      transition: border-color 0.15s;
+      transition: border-color .15s var(--ease), background .15s;
+      background: rgba(0,0,0,0.2);
     }
 
-    .upload-area:hover { border-color: #555; }
+    .upload-area:hover {
+      border-color: var(--border-active);
+      background: rgba(255,255,255,0.02);
+    }
+
     .upload-area input { display: none; }
-    .upload-area .hint { font-size: 13px; color: #666; margin-top: 6px; }
+
+    .upload-icon {
+      width: 36px; height: 36px;
+      border: 1.5px solid var(--border-hover);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 10px;
+      color: var(--text-2);
+    }
+
+    .upload-area .upload-text { font-size: 14px; font-weight: 500; color: var(--text-2); }
+    .upload-area .upload-hint { font-size: 12px; color: var(--text-3); margin-top: 4px; font-family: 'JetBrains Mono', monospace; }
 
     .preview-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-      gap: 8px;
-      margin-top: 12px;
+      grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+      gap: 6px;
+      margin-top: 10px;
     }
 
     .preview-grid img {
       width: 100%; aspect-ratio: 1;
       object-fit: cover;
       border-radius: 6px;
+      border: 1px solid var(--border);
     }
 
+    /* ── CHECKBOXES ── */
     .checkbox-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 8px;
+      grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+      gap: 6px;
     }
 
     .checkbox-item {
       display: flex;
       align-items: center;
       gap: 8px;
-      background: #111;
-      border: 1px solid #2a2a2a;
-      border-radius: 8px;
-      padding: 9px 12px;
+      background: rgba(0,0,0,0.2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 9px 11px;
       cursor: pointer;
-      transition: border-color 0.15s, background 0.15s;
+      transition: border-color .15s, background .15s;
       user-select: none;
     }
 
-    .checkbox-item:hover { border-color: #444; }
-
+    .checkbox-item:hover { border-color: var(--border-hover); background: rgba(255,255,255,0.03); }
     .checkbox-item input[type="checkbox"] { display: none; }
 
     .checkbox-item .check {
-      width: 16px; height: 16px;
-      border: 1.5px solid #444;
+      width: 15px; height: 15px;
+      border: 1.5px solid var(--text-3);
       border-radius: 4px;
       flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
-      transition: background 0.15s, border-color 0.15s;
+      transition: background .15s, border-color .15s;
     }
 
-    .checkbox-item.selected {
-      border-color: #fff;
-      background: #1e1e1e;
-    }
-
-    .checkbox-item.selected .check {
-      background: #fff;
-      border-color: #fff;
-    }
-
+    .checkbox-item.selected { border-color: var(--accent); background: var(--accent-dim); }
+    .checkbox-item.selected .check { background: var(--accent); border-color: var(--accent); }
     .checkbox-item.selected .check::after {
       content: '';
-      width: 9px; height: 5px;
+      width: 8px; height: 5px;
       border-left: 2px solid #000;
       border-bottom: 2px solid #000;
       transform: rotate(-45deg) translateY(-1px);
       display: block;
     }
 
-    .checkbox-item span { font-size: 13px; color: #ccc; }
+    .checkbox-item span { font-size: 12.5px; color: var(--text-2); font-weight: 500; }
+    .checkbox-item.selected span { color: var(--text); }
 
+    /* ── ROW ── */
     .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 560px) { .row { grid-template-columns: 1fr; } }
 
+    /* ── BUTTONS ── */
     .btn {
-      display: inline-flex; align-items: center; justify-content: center;
-      background: #fff;
-      color: #000;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
       border: none;
-      border-radius: 8px;
+      border-radius: var(--radius-sm);
       font-size: 14px; font-weight: 600;
-      padding: 12px 24px;
+      font-family: 'Inter', system-ui, sans-serif;
+      padding: 13px 24px;
       cursor: pointer;
-      transition: opacity 0.15s;
+      transition: opacity .15s, transform .1s;
       width: 100%;
+      letter-spacing: -.01em;
     }
 
-    .btn:hover { opacity: 0.9; }
-    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
-    .btn.secondary { background: #222; color: #fff; border: 1px solid #333; }
+    .btn:hover { opacity: 0.88; }
+    .btn:active { transform: scale(0.99); }
+    .btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 
+    .btn-primary { background: var(--accent); color: #0a0a0c; }
+    .btn-ghost { background: transparent; color: var(--text-2); border: 1px solid var(--border-hover); }
+    .btn-ghost:hover { border-color: var(--border-active); color: var(--text); opacity: 1; }
+    .btn-white { background: #fff; color: #0a0a0c; }
+
+    /* ── STATUS ── */
     .status {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
       font-size: 13px;
-      color: #888;
-      margin-top: 12px;
-      min-height: 18px;
-      text-align: center;
+      color: var(--text-2);
+      margin-top: 14px;
+      min-height: 20px;
+      font-family: 'JetBrains Mono', monospace;
     }
 
     .status.error { color: #ff6b6b; }
-    .status.success { color: #6bff9e; }
+    .status.success { color: var(--accent); }
 
+    .spinner {
+      width: 14px; height: 14px;
+      border: 1.5px solid rgba(255,255,255,0.12);
+      border-top-color: var(--text-2);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      flex-shrink: 0;
+      display: none;
+    }
+
+    .status.loading .spinner { display: block; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── ADS GRID ── */
     .previews-section { display: none; }
 
     .ads-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
+      gap: 12px;
       margin-bottom: 20px;
     }
 
-    .ad-card { background: #111; border-radius: 10px; overflow: hidden; }
-    .ad-card img { width: 100%; display: block; }
-    .ad-card .label { font-size: 12px; color: #666; padding: 8px 12px; }
+    .ad-card {
+      background: rgba(0,0,0,0.4);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      transition: border-color .2s;
+    }
 
+    .ad-card:hover { border-color: var(--border-hover); }
+    .ad-card img { width: 100%; display: block; }
+
+    .ad-card-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+    }
+
+    .ad-card-label .var {
+      font-size: 11px;
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--accent);
+      letter-spacing: .06em;
+    }
+
+    .ad-card-label .fmt {
+      font-size: 11px;
+      color: var(--text-3);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── AUDIENCE BOX ── */
     .publish-section { display: none; }
 
+    .audience-box {
+      background: var(--accent-dim);
+      border: 1px solid rgba(200,255,0,0.18);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      font-size: 13.5px;
+      line-height: 1.65;
+      color: var(--text-2);
+      white-space: pre-wrap;
+    }
+
+    /* ── TOTAL BUDGET ── */
+    .total-box {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 11px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 100%;
+    }
+
+    .total-box .total-value {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -.03em;
+      color: var(--text-3);
+      line-height: 1;
+    }
+
+    .total-box .total-value.has-value { color: var(--accent); }
+
+    /* ── DATEPICKER ── */
     .datepicker-wrap { position: relative; }
 
     .datepicker-input {
       width: 100%;
-      background: #111;
-      border: 1px solid #333;
-      border-radius: 8px;
-      color: #f0f0f0;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
       font-size: 14px;
-      padding: 10px 14px;
+      padding: 11px 14px;
       cursor: pointer;
       user-select: none;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      transition: border-color 0.15s;
+      transition: border-color .15s;
     }
 
-    .datepicker-input:hover { border-color: #555; }
-    .datepicker-input.open { border-color: #fff; }
-    .datepicker-input .placeholder { color: #555; }
-    .datepicker-input svg { flex-shrink: 0; opacity: 0.4; }
+    .datepicker-input:hover { border-color: var(--border-hover); }
+    .datepicker-input.open { border-color: var(--border-active); background: rgba(0,0,0,0.45); }
+    .datepicker-input .placeholder { color: var(--text-3); }
+    .datepicker-input svg { flex-shrink: 0; opacity: 0.35; }
 
     .calendar {
       display: none;
@@ -256,12 +492,12 @@
       top: calc(100% + 6px);
       left: 0;
       z-index: 100;
-      background: #1a1a1a;
-      border: 1px solid #333;
-      border-radius: 10px;
+      background: #16161c;
+      border: 1px solid var(--border-hover);
+      border-radius: var(--radius-sm);
       padding: 16px;
-      width: 260px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      width: 264px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.6);
     }
 
     .calendar.open { display: block; }
@@ -273,20 +509,25 @@
       margin-bottom: 12px;
     }
 
-    .cal-header span { font-size: 14px; font-weight: 600; }
+    .cal-header span {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: -.01em;
+    }
 
     .cal-nav {
       background: none;
       border: none;
-      color: #aaa;
-      font-size: 18px;
+      color: var(--text-2);
+      font-size: 16px;
       cursor: pointer;
-      padding: 2px 8px;
+      padding: 3px 8px;
       border-radius: 4px;
       line-height: 1;
+      transition: background .1s, color .1s;
     }
 
-    .cal-nav:hover { background: #333; color: #fff; }
+    .cal-nav:hover { background: var(--surface-2); color: var(--text); }
 
     .cal-grid {
       display: grid;
@@ -296,67 +537,139 @@
 
     .cal-day-name {
       text-align: center;
-      font-size: 11px;
-      color: #555;
-      padding: 4px 0;
+      font-size: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-3);
+      padding: 4px 0 6px;
     }
 
     .cal-day {
       text-align: center;
-      font-size: 13px;
+      font-size: 12.5px;
       padding: 6px 2px;
-      border-radius: 6px;
+      border-radius: 5px;
       cursor: pointer;
-      color: #ccc;
-      transition: background 0.1s, color 0.1s;
+      color: var(--text-2);
+      transition: background .1s, color .1s;
     }
 
-    .cal-day:hover { background: #333; color: #fff; }
-    .cal-day.today { color: #fff; font-weight: 600; }
-    .cal-day.selected { background: #fff; color: #000; font-weight: 600; }
-    .cal-day.other-month { color: #333; }
-    .cal-day.disabled { color: #2a2a2a; cursor: default; pointer-events: none; }
+    .cal-day:hover { background: var(--surface-2); color: var(--text); }
+    .cal-day.today { color: var(--text); font-weight: 700; }
+    .cal-day.selected { background: var(--accent); color: #000; font-weight: 700; }
+    .cal-day.other-month { color: var(--text-3); opacity: 0.4; }
+    .cal-day.disabled { color: var(--text-3); opacity: 0.2; cursor: default; pointer-events: none; }
+
+    /* ── DIVIDER ── */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 24px 0;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 48px 28px 0;
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-3);
+      letter-spacing: .04em;
+    }
+
+    footer a { color: var(--text-3); text-decoration: none; }
+    footer a:hover { color: var(--text-2); }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Ads Manager</h1>
-    <p class="subtitle">Gere e publique anúncios no Meta Ads em minutos</p>
 
-    <!-- STEP 1: Upload -->
+  <!-- HEADER -->
+  <header>
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-mark">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8h10M8 3v10" stroke="#0a0a0c" stroke-width="2.2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <div class="brand-name">Ads Manager</div>
+          <div class="brand-sub">META ADS · AI-POWERED</div>
+        </div>
+      </div>
+      <div class="header-sig">por Lucas Lanzoni</div>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- PAGE TITLE -->
+    <div class="page-title">
+      <div class="eyebrow">Gerador de Campanhas</div>
+      <h1>Crie anúncios em minutos.</h1>
+      <p>Upload de fotos, geração de artes por IA e publicação direta no Meta Ads.</p>
+    </div>
+
+    <!-- STEP 1 -->
     <div class="step" id="step-upload">
       <div class="step-header">
-        <div class="step-number">1</div>
-        <div class="step-title">Fotos e identidade da marca</div>
+        <div class="step-number">01</div>
+        <div class="step-title">Identidade e briefing</div>
       </div>
 
+      <!-- Fotos -->
       <div class="field">
-        <label>Fotos do produto / campanha *</label>
+        <div class="field-label">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="3" width="12" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="7" cy="7.5" r="2" stroke="currentColor" stroke-width="1.3"/><path d="M4.5 3V2a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v1" stroke="currentColor" stroke-width="1.3"/></svg>
+          Fotos da campanha *
+        </div>
         <div class="upload-area" onclick="document.getElementById('photos-input').click()">
           <input type="file" id="photos-input" accept="image/*" multiple />
-          <div>Clique para selecionar fotos</div>
-          <div class="hint">JPG, PNG ou WEBP · até 20MB cada · mínimo 1, máximo 10</div>
+          <div class="upload-icon">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 12V4M9 4l-3 3M9 4l3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 14h12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </div>
+          <div class="upload-text">Clique para selecionar fotos</div>
+          <div class="upload-hint">JPG · PNG · WEBP · até 20MB · máx. 10 arquivos</div>
         </div>
         <div class="preview-grid" id="photos-preview"></div>
       </div>
 
+      <!-- Logo -->
       <div class="field">
-        <label>Logo da marca (opcional, PNG com fundo transparente)</label>
+        <div class="field-label">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.3"/><path d="M4.5 7h5M7 4.5v5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          Logo da marca
+          <span style="font-size:10px;color:var(--text-3);text-transform:none;letter-spacing:0;font-family:'Inter',sans-serif">(opcional)</span>
+        </div>
         <div class="upload-area" onclick="document.getElementById('logo-input').click()">
           <input type="file" id="logo-input" accept="image/png" />
-          <div>Clique para selecionar o logo</div>
-          <div class="hint">PNG com fundo transparente</div>
+          <div class="upload-icon">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="14" height="14" rx="3" stroke="currentColor" stroke-width="1.4"/><path d="M2 11l4-4 3 3 2-2 5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="upload-text">PNG com fundo transparente</div>
+          <div class="upload-hint">Formato recomendado para sobreposição</div>
         </div>
         <div id="logo-preview"></div>
       </div>
 
+      <div class="divider"></div>
+
+      <!-- Nome -->
       <div class="field">
-        <label>Nome da marca *</label>
+        <div class="field-label">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 4h10M2 7h7M2 10h5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          Nome da marca *
+        </div>
         <input type="text" id="brand-name" placeholder="Ex: Tropí Discos" />
       </div>
 
+      <!-- Segmentos -->
       <div class="field">
-        <label>Segmento(s) da marca *</label>
+        <div class="field-label">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="8" y="1" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="1" y="8" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="8" y="8" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/></svg>
+          Segmento(s) *
+        </div>
         <div class="checkbox-grid" id="segments">
           <label class="checkbox-item" onclick="toggleSegment(this)"><input type="checkbox" value="APPAREL" /><div class="check"></div><span>Moda e vestuário</span></label>
           <label class="checkbox-item" onclick="toggleSegment(this)"><input type="checkbox" value="BEAUTY" /><div class="check"></div><span>Beleza e cosméticos</span></label>
@@ -375,59 +688,93 @@
         </div>
       </div>
 
+      <!-- Instagram -->
       <div class="field">
-        <label>URL do Instagram da marca</label>
+        <div class="field-label">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="1.5" width="11" height="11" rx="3" stroke="currentColor" stroke-width="1.3"/><circle cx="7" cy="7" r="2.5" stroke="currentColor" stroke-width="1.3"/><circle cx="10.5" cy="3.5" r=".7" fill="currentColor"/></svg>
+          URL do Instagram
+        </div>
         <input type="url" id="instagram-url" placeholder="https://instagram.com/marca" />
       </div>
 
+      <!-- Briefing -->
       <div class="field">
-        <label>Briefing da campanha (opcional)</label>
-        <textarea id="briefing" placeholder="Descreva o objetivo da campanha, público-alvo desejado, tom de comunicação, sazonalidade ou qualquer contexto relevante. Ex: lançamento de coleção de verão para jovens de 18-30 anos que curtem moda sustentável."></textarea>
+        <div class="field-label">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2h10v10H2z" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M4 5h6M4 7.5h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          Briefing da campanha
+          <span style="font-size:10px;color:var(--text-3);text-transform:none;letter-spacing:0;font-family:'Inter',sans-serif">(opcional)</span>
+        </div>
+        <textarea id="briefing" placeholder="Objetivo, público-alvo, tom de comunicação, sazonalidade… Quanto mais contexto, melhor a sugestão de segmentação."></textarea>
       </div>
 
+      <!-- Copy toggle -->
       <div class="field">
-        <label>Copy na peça</label>
-        <label class="checkbox-item" id="include-copy-toggle" onclick="toggleCopy(this)" style="max-width:260px">
+        <div class="field-label">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 4h10M4 7h6M5 10h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          Copy na peça
+        </div>
+        <label class="checkbox-item" id="include-copy-toggle" onclick="toggleCopy(this)" style="max-width:280px">
           <input type="checkbox" id="include-copy" checked />
           <div class="check"></div>
           <span>Incluir headline e copy nas artes</span>
         </label>
       </div>
 
-      <button class="btn" id="btn-analyze" onclick="startAnalysis()">Analisar e gerar artes</button>
-      <div class="status" id="status-analyze"></div>
+      <button class="btn btn-primary" id="btn-analyze" onclick="startAnalysis()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v3M8 11v3M2 8h3M11 8h3M4 4l2 2M10 10l2 2M4 12l2-2M10 6l2-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        Analisar e gerar artes
+      </button>
+      <div class="status" id="status-analyze"><div class="spinner"></div><span id="status-analyze-text"></span></div>
     </div>
 
-    <!-- STEP 2: Previews -->
+    <!-- STEP 2 -->
     <div class="step previews-section" id="step-previews">
       <div class="step-header">
-        <div class="step-number">2</div>
+        <div class="step-number">02</div>
         <div class="step-title">Sugestão de artes</div>
       </div>
       <div class="ads-grid" id="ads-grid"></div>
-      <button class="btn secondary" onclick="regenerate()" style="margin-bottom:10px">Regerar sugestões</button>
-      <button class="btn" onclick="showPublish()">Publicar no Meta Ads</button>
+      <button class="btn btn-ghost" onclick="regenerate()" style="margin-bottom:10px">
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M13 7.5A5.5 5.5 0 1 1 7.5 2c2 0 3.7 1 4.7 2.5M13 2v3h-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Regerar sugestões
+      </button>
+      <button class="btn btn-white" onclick="showPublish()">
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M7.5 2v9M4 8l3.5 3.5L11 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 13h11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        Publicar no Meta Ads
+      </button>
     </div>
 
-    <!-- STEP 3: Publicar -->
+    <!-- STEP 3 -->
     <div class="step publish-section" id="step-publish">
       <div class="step-header">
-        <div class="step-number">3</div>
+        <div class="step-number">03</div>
         <div class="step-title">Configurar publicação</div>
       </div>
 
+      <!-- Sugestão de público -->
       <div class="field" id="audience-suggestion-field" style="display:none">
-        <label>Sugestão de público (gerada pela IA)</label>
+        <div class="field-label">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="5" cy="4" r="2" stroke="currentColor" stroke-width="1.3"/><path d="M1 12c0-2.2 1.8-4 4-4s4 1.8 4 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="10" cy="5" r="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M12 12c0-1.7-1-3-2.5-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          Sugestão de público — IA
+        </div>
         <div class="audience-box" id="audience-suggestion"></div>
       </div>
 
+      <!-- Page ID -->
       <div class="field">
-        <label>Page ID da página do Facebook *</label>
-        <input type="text" id="page-id" placeholder="Ex: 123456789" />
+        <div class="field-label">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="2.5" width="11" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="5" cy="7" r="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 5.5h3M8 8.5h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          Page ID do Facebook *
+        </div>
+        <input type="text" id="page-id" placeholder="Ex: 696774944884079" />
       </div>
 
+      <!-- Rede -->
       <div class="field">
-        <label>Rede de veiculação *</label>
+        <div class="field-label">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.3"/><path d="M7 1.5C7 1.5 5 4 5 7s2 5.5 2 5.5M7 1.5C7 1.5 9 4 9 7s-2 5.5-2 5.5M1.5 7h11" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          Rede de veiculação *
+        </div>
         <select id="network">
           <option value="both">Instagram + Facebook</option>
           <option value="instagram">Somente Instagram</option>
@@ -435,55 +782,68 @@
         </select>
       </div>
 
+      <!-- Orçamento -->
       <div class="row">
         <div class="field">
-          <label>Orçamento diário (R$) *</label>
+          <div class="field-label">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="3" width="11" height="8" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M1.5 6h11" stroke="currentColor" stroke-width="1.3"/><circle cx="7" cy="8.5" r=".8" fill="currentColor"/></svg>
+            Orçamento diário (R$) *
+          </div>
           <input type="number" id="daily-budget" placeholder="50" min="5" oninput="updateTotal()" />
         </div>
         <div class="field">
-          <label>Total estimado da campanha</label>
-          <div id="total-budget" style="
-            background:#111;
-            border:1px solid #333;
-            border-radius:8px;
-            padding:10px 14px;
-            font-size:20px;
-            font-weight:700;
-            color:#aaa;
-            height:100%;
-            display:flex;
-            align-items:center;
-          ">—</div>
+          <div class="field-label">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M4 5l3-3 3 3M4 9l3 3 3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Total estimado
+          </div>
+          <div class="total-box">
+            <div class="total-value" id="total-budget">—</div>
+          </div>
         </div>
       </div>
 
+      <!-- Datas -->
       <div class="row">
         <div class="field">
-          <label>Data de início *</label>
+          <div class="field-label">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="3" width="12" height="10" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M4.5 1v3M9.5 1v3M1 6.5h12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            Data de início *
+          </div>
           <div class="datepicker-wrap">
             <div class="datepicker-input" id="start-date-input" onclick="toggleCalendar('start')">
               <span class="placeholder" id="start-date-label">Selecionar data</span>
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M5 1v4M11 1v4M1 7h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="1" y="2.5" width="13" height="11" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M5 1v3M10 1v3M1 6.5h13" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
             </div>
             <div class="calendar" id="start-calendar"></div>
           </div>
         </div>
         <div class="field">
-          <label>Data de término *</label>
+          <div class="field-label">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="3" width="12" height="10" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M4.5 1v3M9.5 1v3M1 6.5h12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            Data de término *
+          </div>
           <div class="datepicker-wrap">
             <div class="datepicker-input" id="end-date-input" onclick="toggleCalendar('end')">
               <span class="placeholder" id="end-date-label">Selecionar data</span>
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M5 1v4M11 1v4M1 7h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="1" y="2.5" width="13" height="11" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M5 1v3M10 1v3M1 6.5h13" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
             </div>
             <div class="calendar" id="end-calendar"></div>
           </div>
         </div>
       </div>
 
-      <button class="btn" id="btn-publish" onclick="publishAds()">Publicar campanha</button>
-      <div class="status" id="status-publish"></div>
+      <button class="btn btn-primary" id="btn-publish" onclick="publishAds()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2l6 6-6 6M2 8h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Publicar campanha
+      </button>
+      <div class="status" id="status-publish"><div class="spinner"></div><span id="status-publish-text"></span></div>
     </div>
+
   </div>
+
+  <footer>
+    <p>Criado por <a href="https://instagram.com/lucaslanzoni" target="_blank">Lucas Lanzoni</a> &nbsp;·&nbsp; Ads Manager v1</p>
+  </footer>
 
   <script src="app.js"></script>
 </body>

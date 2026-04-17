@@ -51,9 +51,12 @@ document.getElementById('logo-input').addEventListener('change', e => {
 });
 
 function setStatus(id, msg, type = '') {
-  const el = document.getElementById(id);
-  el.textContent = msg;
-  el.className = 'status ' + type;
+  const el   = document.getElementById(id);
+  const text = document.getElementById(id + '-text');
+  if (text) text.textContent = msg;
+  else el.textContent = msg;
+  el.className = 'status' + (type ? ' ' + type : '') + (msg && !type ? ' loading' : '');
+  if (type) el.classList.remove('loading');
 }
 
 async function startAnalysis() {
@@ -135,7 +138,7 @@ function renderPreviews(images) {
   images.forEach(img => {
     const card = document.createElement('div');
     card.className = 'ad-card';
-    card.innerHTML = `<img src="${API}${img.url}" /><div class="label">${img.variationId.toUpperCase()} · ${img.format}</div>`;
+    card.innerHTML = `<img src="${API}${img.url}" /><div class="ad-card-label"><span class="var">${img.variationId.toUpperCase()}</span><span class="fmt">${img.format}</span></div>`;
     grid.appendChild(card);
   });
 }
@@ -231,13 +234,13 @@ function updateTotal() {
   const end    = calState.end.date;
   const el     = document.getElementById('total-budget');
 
-  if (!budget || !start || !end) { el.textContent = '—'; el.style.color = '#aaa'; return; }
+  if (!budget || !start || !end) { el.textContent = '—'; el.classList.remove('has-value'); return; }
 
   const days  = Math.round((end - start) / 86400000) + 1;
   const total = budget * days;
 
   el.textContent = `R$ ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
-  el.style.color = '#fff';
+  el.classList.add('has-value');
   el.title = `${days} dia${days > 1 ? 's' : ''} × R$ ${budget.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
 }
 
