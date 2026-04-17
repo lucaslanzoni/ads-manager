@@ -10,65 +10,67 @@
     width: 1080px;
     height: 1080px;
     overflow: hidden;
-    position: relative;
+    display: flex;
+    flex-direction: column;
     font-family: {{fontFamily}};
+    background: #0a0a0c;
   }
 
-  .photo {
-    position: absolute;
-    inset: 0;
+  .photo-zone {
+    flex: 0 0 648px;
+    overflow: hidden;
+  }
+
+  .photo-zone img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
   }
 
-  .overlay {
-    position: absolute;
-    inset: 0;
-    background: {{overlayGradient}};
+  .accent {
+    height: 5px;
+    background: {{primaryColor}};
+    flex-shrink: 0;
   }
 
-  .content {
-    position: absolute;
-    inset: 0;
+  .text-zone {
+    flex: 1;
+    background: #0a0a0c;
+    padding: 32px 64px;
     display: flex;
     flex-direction: column;
-    justify-content: {{contentAlign}};
-    padding: 80px;
+    justify-content: center;
+    gap: 14px;
   }
 
   .logo {
+    height: 36px;
     width: auto;
-    height: 64px;
     object-fit: contain;
     object-position: left;
-    margin-bottom: 32px;
   }
 
   .headline {
     font-size: {{headlineSize}}px;
     font-weight: 800;
-    color: {{textColor}};
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-    margin-bottom: 16px;
-    max-width: 800px;
+    color: #f2f2f4;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
   }
 
   .copy {
-    font-size: 36px;
+    font-size: 30px;
     font-weight: 400;
-    color: {{textColor}};
-    opacity: 0.85;
+    color: rgba(242,242,244,0.6);
     line-height: 1.4;
-    max-width: 700px;
   }
 </style>
 </head>
 <body>
-  <img class="photo" src="{{photo}}" />
-  {{#if overlay}}<div class="overlay"></div>{{/if}}
-  <div class="content">
+  <div class="photo-zone"><img src="{{photo}}" /></div>
+  <div class="accent"></div>
+  <div class="text-zone">
     {{#if logo}}<img class="logo" src="{{logo}}" />{{/if}}
     {{#if headline}}<div class="headline">{{headline}}</div>{{/if}}
     {{#if copy}}<div class="copy">{{copy}}</div>{{/if}}

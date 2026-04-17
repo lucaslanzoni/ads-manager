@@ -3,8 +3,8 @@ const fs = require('fs');
 const path = require('path');
 
 const FORMATS = {
-  feed:    { width: 1080, height: 1080,  headlineSize: 96  },
-  stories: { width: 1080, height: 1920,  headlineSize: 112 },
+  feed:    { width: 1080, height: 1080,  headlineSize: 72 },
+  stories: { width: 1080, height: 1920,  headlineSize: 88 },
 };
 
 function toFileUrl(filePath) {
@@ -37,22 +37,17 @@ async function generateVariations({ sessionId, variations, photoIds, logoId, pal
       const templatePath = path.join(__dirname, '../templates', `${fmt}.html`);
       const templateHtml = fs.readFileSync(templatePath, 'utf8');
 
-      const overlayGradient = `linear-gradient(to top, rgba(${palette.overlay},${palette.overlayOpacity}) 0%, rgba(${palette.overlay},0) 60%)`;
-
       const fontSlug = fontFamily.replace(/ /g, '+');
-      const fontLink = `<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=${fontSlug}:wght@700&display=swap">`;
+      const fontLink = `<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=${fontSlug}:wght@400;700;800&display=swap">`;
 
       const html = renderTemplate(templateHtml, {
-        photo:           toFileUrl(photoPath),
-        logo:            logoPath && variation.logoVisible ? toFileUrl(logoPath) : '',
-        headline:        variation.headline,
-        copy:            variation.copy,
-        textColor:       palette.text,
-        overlayGradient,
-        overlay:         'true',
+        photo:        toFileUrl(photoPath),
+        logo:         logoPath && variation.logoVisible ? toFileUrl(logoPath) : '',
+        headline:     variation.headline,
+        copy:         variation.copy,
+        primaryColor: palette.primary || '#c8ff00',
         headlineSize,
-        contentAlign:    { top: 'flex-start', center: 'center', bottom: 'flex-end' }[variation.align] || 'flex-end',
-        fontFamily:      `'${fontFamily}', sans-serif`,
+        fontFamily:   `'${fontFamily}', sans-serif`,
         fontLink,
       });
 
