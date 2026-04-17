@@ -42,6 +42,8 @@ async function analyzeAndGenerateBrief({ photoIds, brandName, segments, instagra
 
 Analise as fotos acima para a marca "${brandName}" (segmentos: ${segments.join(', ')}, Instagram: ${instagramUrl}).${adExamples}
 
+Para cada foto, analise ONDE está o sujeito principal (produto, pessoa, objeto) e identifique a ÁREA LIVRE — região sem elementos visuais importantes onde o texto pode aparecer sem sobrepor nada.
+
 Retorne EXATAMENTE este JSON (sem markdown, sem explicações):
 {
   "palette": { "primary": "#hex", "text": "#hex", "overlay": "0,0,0", "overlayOpacity": "0.4" },
@@ -65,12 +67,18 @@ Retorne EXATAMENTE este JSON (sem markdown, sem explicações):
   ]
 }
 
-Regras:
+Regras CRÍTICAS de posicionamento:
+- align: escolha onde há ÁREA LIVRE na foto (sem sujeito, sem elemento visual importante)
+  - "top" → sujeito principal está na metade inferior da foto
+  - "bottom" → sujeito principal está na metade superior da foto
+  - "center" → sujeito principal está nas laterais ou nos cantos
+- NUNCA escolha "bottom" se o sujeito ou produto estiver na parte inferior
+- NUNCA escolha "top" se o sujeito estiver na parte superior
+- logoVisible: false se não houver área limpa suficiente para o logo sem sobrepor o sujeito
 - photoIndex: índice da melhor foto para cada variação (0-based, máximo ${photoIds.length - 1})
-- align: "top", "center" ou "bottom" dependendo do espaço livre na foto
 - headline: máximo 6 palavras, impactante
 - copy: máximo 12 palavras, complementa a headline
-- Se não houver foto suficiente para 2 variações diferentes, repita o índice 0
+- Se não houver fotos suficientes para 2 variações diferentes, repita o índice 0
 - overlayOpacity entre 0.2 e 0.6 dependendo do contraste necessário`,
         },
       ],
