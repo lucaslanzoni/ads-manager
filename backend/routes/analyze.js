@@ -1,0 +1,31 @@
+const express = require('express');
+const { searchAds } = require('../services/adLibrary');
+const { analyzeAndGenerateBrief } = require('../services/claude');
+
+const router = express.Router();
+
+router.post('/', async (req, res) => {
+  const { photoIds, logoId, brandName, segments, instagramUrl } = req.body;
+
+  if (!photoIds?.length || !brandName || !segments?.length) {
+    return res.status(400).json({ error: 'photoIds, brandName e segments são obrigatórios' });
+  }
+
+  try {
+    const adLibraryAds = await searchAds(segments);
+    const brief = await analyzeAndGenerateBrief({
+      photoIds,
+      brandName,
+      segments,
+      instagramUrl: instagramUrl || '',
+      adLibraryAds,
+    });
+
+    res.json({ brief, adLibraryAds });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+module.exports = router;

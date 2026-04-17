@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1080px;
+    height: 1080px;
+    overflow: hidden;
+    position: relative;
+    font-family: {{fontFamily}};
+  }
+
+  .photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .overlay {
+    position: absolute;
+    inset: 0;
+    background: {{overlayGradient}};
+  }
+
+  .content {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: {{contentAlign}};
+    padding: 80px;
+  }
+
+  .logo {
+    width: auto;
+    height: 64px;
+    object-fit: contain;
+    object-position: left;
+    margin-bottom: 32px;
+  }
+
+  .headline {
+    font-size: {{headlineSize}}px;
+    font-weight: 800;
+    color: {{textColor}};
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+    max-width: 800px;
+  }
+
+  .copy {
+    font-size: 36px;
+    font-weight: 400;
+    color: {{textColor}};
+    opacity: 0.85;
+    line-height: 1.4;
+    max-width: 700px;
+  }
+</style>
+</head>
+<body>
+  <img class="photo" src="{{photo}}" />
+  {{#if overlay}}<div class="overlay"></div>{{/if}}
+  <div class="content">
+    {{#if logo}}<img class="logo" src="{{logo}}" />{{/if}}
+    {{#if headline}}<div class="headline">{{headline}}</div>{{/if}}
+    {{#if copy}}<div class="copy">{{copy}}</div>{{/if}}
+  </div>
+</body>
+</html>

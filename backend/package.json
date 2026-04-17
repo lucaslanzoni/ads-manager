@@ -1,0 +1,20 @@
+{
+  "name": "ads-manager-backend",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "type": "commonjs",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.90.0",
+    "axios": "^1.15.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "form-data": "^4.0.5",
+    "multer": "^2.1.1",
+    "puppeteer": "^24.41.0"
+  }
+}

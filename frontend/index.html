@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ads Manager</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #0f0f0f;
+      color: #f0f0f0;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .container { max-width: 800px; margin: 0 auto; }
+
+    h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+    .subtitle { color: #888; font-size: 14px; margin-bottom: 40px; }
+
+    .step {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      padding: 28px;
+      margin-bottom: 20px;
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .step-number {
+      width: 28px; height: 28px;
+      background: #333;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .step-title { font-size: 16px; font-weight: 600; }
+
+    label { display: block; font-size: 13px; color: #aaa; margin-bottom: 6px; }
+
+    input[type="text"], input[type="url"], input[type="number"], input[type="date"], select {
+      width: 100%;
+      background: #111;
+      border: 1px solid #333;
+      border-radius: 8px;
+      color: #f0f0f0;
+      font-size: 14px;
+      padding: 10px 14px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    input:focus, select:focus { border-color: #555; }
+
+    .field { margin-bottom: 16px; }
+
+    .upload-area {
+      border: 2px dashed #333;
+      border-radius: 10px;
+      padding: 32px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+
+    .upload-area:hover { border-color: #555; }
+    .upload-area input { display: none; }
+    .upload-area .hint { font-size: 13px; color: #666; margin-top: 6px; }
+
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .preview-grid img {
+      width: 100%; aspect-ratio: 1;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+
+    select[multiple] { height: 120px; }
+
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      background: #fff;
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px; font-weight: 600;
+      padding: 12px 24px;
+      cursor: pointer;
+      transition: opacity 0.15s;
+      width: 100%;
+    }
+
+    .btn:hover { opacity: 0.9; }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn.secondary { background: #222; color: #fff; border: 1px solid #333; }
+
+    .status {
+      font-size: 13px;
+      color: #888;
+      margin-top: 12px;
+      min-height: 18px;
+      text-align: center;
+    }
+
+    .status.error { color: #ff6b6b; }
+    .status.success { color: #6bff9e; }
+
+    .previews-section { display: none; }
+
+    .ads-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .ad-card { background: #111; border-radius: 10px; overflow: hidden; }
+    .ad-card img { width: 100%; display: block; }
+    .ad-card .label { font-size: 12px; color: #666; padding: 8px 12px; }
+
+    .publish-section { display: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Ads Manager</h1>
+    <p class="subtitle">Gere e publique anúncios no Meta Ads em minutos</p>
+
+    <!-- STEP 1: Upload -->
+    <div class="step" id="step-upload">
+      <div class="step-header">
+        <div class="step-number">1</div>
+        <div class="step-title">Fotos e identidade da marca</div>
+      </div>
+
+      <div class="field">
+        <label>Fotos do produto / campanha *</label>
+        <div class="upload-area" onclick="document.getElementById('photos-input').click()">
+          <input type="file" id="photos-input" accept="image/*" multiple />
+          <div>Clique para selecionar fotos</div>
+          <div class="hint">JPG, PNG ou WEBP · até 20MB cada · mínimo 1, máximo 10</div>
+        </div>
+        <div class="preview-grid" id="photos-preview"></div>
+      </div>
+
+      <div class="field">
+        <label>Logo da marca (opcional, PNG com fundo transparente)</label>
+        <div class="upload-area" onclick="document.getElementById('logo-input').click()">
+          <input type="file" id="logo-input" accept="image/png" />
+          <div>Clique para selecionar o logo</div>
+          <div class="hint">PNG com fundo transparente</div>
+        </div>
+        <div id="logo-preview"></div>
+      </div>
+
+      <div class="field">
+        <label>Nome da marca *</label>
+        <input type="text" id="brand-name" placeholder="Ex: Tropí Discos" />
+      </div>
+
+      <div class="field">
+        <label>Segmento(s) da marca * (segure Ctrl/Cmd para múltiplos)</label>
+        <select id="segments" multiple>
+          <option value="APPAREL">Moda e vestuário</option>
+          <option value="BEAUTY">Beleza e cosméticos</option>
+          <option value="ECOMMERCE">E-commerce</option>
+          <option value="EDUCATION">Educação</option>
+          <option value="ENTERTAINMENT">Entretenimento</option>
+          <option value="FOOD_AND_GROCERY">Alimentação</option>
+          <option value="HEALTH">Saúde e bem-estar</option>
+          <option value="HOME_AND_GARDEN">Casa e decoração</option>
+          <option value="MUSIC">Música</option>
+          <option value="PROFESSIONAL_SERVICES">Serviços profissionais</option>
+          <option value="RETAIL">Varejo</option>
+          <option value="SPORTS">Esportes</option>
+          <option value="TECHNOLOGY">Tecnologia</option>
+          <option value="TRAVEL">Viagem e turismo</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>URL do Instagram da marca</label>
+        <input type="url" id="instagram-url" placeholder="https://instagram.com/marca" />
+      </div>
+
+      <button class="btn" id="btn-analyze" onclick="startAnalysis()">Analisar e gerar artes</button>
+      <div class="status" id="status-analyze"></div>
+    </div>
+
+    <!-- STEP 2: Previews -->
+    <div class="step previews-section" id="step-previews">
+      <div class="step-header">
+        <div class="step-number">2</div>
+        <div class="step-title">Sugestão de artes</div>
+      </div>
+      <div class="ads-grid" id="ads-grid"></div>
+      <button class="btn secondary" onclick="regenerate()" style="margin-bottom:10px">Regerar sugestões</button>
+      <button class="btn" onclick="showPublish()">Publicar no Meta Ads</button>
+    </div>
+
+    <!-- STEP 3: Publicar -->
+    <div class="step publish-section" id="step-publish">
+      <div class="step-header">
+        <div class="step-number">3</div>
+        <div class="step-title">Configurar publicação</div>
+      </div>
+
+      <div class="field">
+        <label>Page ID da página do Facebook *</label>
+        <input type="text" id="page-id" placeholder="Ex: 123456789" />
+      </div>
+
+      <div class="field">
+        <label>Rede de veiculação *</label>
+        <select id="network">
+          <option value="both">Instagram + Facebook</option>
+          <option value="instagram">Somente Instagram</option>
+          <option value="facebook">Somente Facebook</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label>Orçamento diário (R$) *</label>
+          <input type="number" id="daily-budget" placeholder="50" min="5" />
+        </div>
+        <div class="field" style="grid-column: span 1"></div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label>Data de início *</label>
+          <input type="date" id="start-date" />
+        </div>
+        <div class="field">
+          <label>Data de término *</label>
+          <input type="date" id="end-date" />
+        </div>
+      </div>
+
+      <button class="btn" id="btn-publish" onclick="publishAds()">Publicar campanha</button>
+      <div class="status" id="status-publish"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
