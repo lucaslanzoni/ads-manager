@@ -6,6 +6,20 @@ function toggleSegment(el) {
   el.classList.toggle('selected', cb.checked);
 }
 
+function toggleCopy(el) {
+  const cb = el.querySelector('input[type="checkbox"]');
+  cb.checked = !cb.checked;
+  el.classList.toggle('selected', cb.checked);
+  el.querySelector('span').textContent = cb.checked
+    ? 'Incluir headline e copy nas artes'
+    : 'Somente foto — sem texto na peça';
+}
+
+// inicia o toggle de copy como selecionado (checked por padrão)
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('include-copy-toggle').classList.add('selected');
+});
+
 let state = {
   photoIds: [],
   logoId: null,
@@ -63,15 +77,16 @@ async function startAnalysis() {
   const uploadRes = await fetch(`${API}/api/upload`, { method: 'POST', body: formData });
   const uploaded  = await uploadRes.json();
 
-  state.photoIds = uploaded.photos.map(p => p.id);
-  state.logoId   = uploaded.logo?.id || null;
+  state.photoIds   = uploaded.photos.map(p => p.id);
+  state.logoId     = uploaded.logo?.id || null;
+  state.includeCopy = document.getElementById('include-copy').checked;
 
   setStatus('status-analyze', 'Analisando fotos e biblioteca de anúncios...');
 
   const analyzeRes = await fetch(`${API}/api/analyze`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ photoIds: state.photoIds, logoId: state.logoId, brandName, segments, instagramUrl }),
+    body: JSON.stringify({ photoIds: state.photoIds, logoId: state.logoId, brandName, segments, instagramUrl, includeCopy: state.includeCopy }),
   });
   const analyzed = await analyzeRes.json();
 
@@ -91,7 +106,7 @@ async function generateImages() {
   const genRes = await fetch(`${API}/api/generate`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ brief: state.brief, photoIds: state.photoIds, logoId: state.logoId }),
+    body: JSON.stringify({ brief: state.brief, photoIds: state.photoIds, logoId: state.logoId, includeCopy: state.includeCopy }),
   });
   const generated = await genRes.json();
 

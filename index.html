@@ -251,6 +251,15 @@
         <input type="url" id="instagram-url" placeholder="https://instagram.com/marca" />
       </div>
 
+      <div class="field">
+        <label>Copy na peça</label>
+        <label class="checkbox-item" id="include-copy-toggle" onclick="toggleCopy(this)" style="max-width:260px">
+          <input type="checkbox" id="include-copy" checked />
+          <div class="check"></div>
+          <span>Incluir headline e copy nas artes</span>
+        </label>
+      </div>
+
       <button class="btn" id="btn-analyze" onclick="startAnalysis()">Analisar e gerar artes</button>
       <div class="status" id="status-analyze"></div>
     </div>

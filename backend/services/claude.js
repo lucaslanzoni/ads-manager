@@ -22,7 +22,7 @@ function photoContent(photoIds) {
   }));
 }
 
-async function analyzeAndGenerateBrief({ photoIds, brandName, segments, instagramUrl, adLibraryAds }) {
+async function analyzeAndGenerateBrief({ photoIds, brandName, segments, instagramUrl, adLibraryAds, includeCopy = true }) {
   const images = photoContent(photoIds);
 
   const adExamples = adLibraryAds.length > 0
@@ -42,7 +42,7 @@ async function analyzeAndGenerateBrief({ photoIds, brandName, segments, instagra
 
 Analise as fotos acima para a marca "${brandName}" (segmentos: ${segments.join(', ')}, Instagram: ${instagramUrl}).${adExamples}
 
-Para cada foto, analise ONDE está o sujeito principal (produto, pessoa, objeto) e identifique a ÁREA LIVRE — região sem elementos visuais importantes onde o texto pode aparecer sem sobrepor nada.
+${includeCopy ? '' : 'IMPORTANTE: NÃO inclua headline nem copy nas variações — as peças serão somente foto. Deixe headline e copy como strings vazias.\n\n'}Para cada foto, analise ONDE está o sujeito principal (produto, pessoa, objeto) e identifique a ÁREA LIVRE — região sem elementos visuais importantes onde o texto pode aparecer sem sobrepor nada.
 
 Retorne EXATAMENTE este JSON (sem markdown, sem explicações):
 {

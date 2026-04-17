@@ -5,7 +5,7 @@ const { analyzeAndGenerateBrief } = require('../services/claude');
 const router = express.Router();
 
 router.post('/', async (req, res) => {
-  const { photoIds, logoId, brandName, segments, instagramUrl } = req.body;
+  const { photoIds, logoId, brandName, segments, instagramUrl, includeCopy = true } = req.body;
 
   if (!photoIds?.length || !brandName || !segments?.length) {
     return res.status(400).json({ error: 'photoIds, brandName e segments são obrigatórios' });
@@ -19,6 +19,7 @@ router.post('/', async (req, res) => {
       segments,
       instagramUrl: instagramUrl || '',
       adLibraryAds,
+      includeCopy,
     });
 
     res.json({ brief, adLibraryAds });
