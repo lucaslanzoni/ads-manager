@@ -431,45 +431,30 @@
     .publish-section { display: none; }
 
     /* ── FONT PICKER ── */
-    .font-picker { position: relative; }
+    .font-picker { position: relative; display: inline-block; }
 
-    .font-search-input {
-      width: 100%;
+    .font-trigger {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       background: rgba(0,0,0,0.3);
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
-      color: var(--text);
-      font-size: 14px;
-      font-family: 'Inter', sans-serif;
-      padding: 11px 14px 11px 38px;
-      outline: none;
-      transition: border-color .15s;
+      padding: 9px 14px;
+      cursor: pointer;
+      transition: border-color .15s var(--ease), background .15s;
+      user-select: none;
     }
 
-    .font-search-input:focus { border-color: var(--border-active); }
-    .font-search-input::placeholder { color: var(--text-3); }
+    .font-trigger:hover { border-color: var(--border-hover); }
+    .font-trigger.open  { border-color: var(--border-active); background: rgba(0,0,0,0.45); }
 
-    .font-search-icon {
-      position: absolute;
-      left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      opacity: 0.35;
-      pointer-events: none;
-    }
+    .font-trigger-icon { opacity: 0.45; flex-shrink: 0; }
 
-    .font-selected-preview {
-      position: absolute;
-      right: 14px;
-      top: 50%;
-      transform: translateY(-50%);
+    .font-trigger-name {
       font-size: 13px;
-      color: var(--accent);
       font-weight: 600;
-      pointer-events: none;
-      max-width: 160px;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      color: var(--accent);
       white-space: nowrap;
     }
 
@@ -477,17 +462,44 @@
       display: none;
       position: absolute;
       top: calc(100% + 6px);
-      left: 0; right: 0;
+      left: 0;
+      min-width: 240px;
       z-index: 200;
       background: #16161c;
       border: 1px solid var(--border-hover);
       border-radius: var(--radius-sm);
-      max-height: 260px;
-      overflow-y: auto;
       box-shadow: 0 12px 32px rgba(0,0,0,0.6);
+      overflow: hidden;
     }
 
     .font-dropdown.open { display: block; }
+
+    .font-dropdown-search {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .font-dropdown-search svg { opacity: 0.35; flex-shrink: 0; }
+
+    .font-dropdown-search input {
+      background: none;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-size: 13px;
+      font-family: 'Inter', sans-serif;
+      width: 100%;
+    }
+
+    .font-dropdown-search input::placeholder { color: var(--text-3); }
+
+    .font-list {
+      max-height: 240px;
+      overflow-y: auto;
+    }
 
     .font-option {
       padding: 10px 14px;
@@ -868,10 +880,17 @@
           Fonte da arte
         </div>
         <div class="font-picker" id="font-picker">
-          <svg class="font-search-icon" width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4" stroke="currentColor" stroke-width="1.3"/><path d="M10 10l2.5 2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-          <input class="font-search-input" id="font-search" type="text" placeholder="Buscar fonte…" autocomplete="off" oninput="filterFonts(this.value)" onfocus="openFontDropdown()" />
-          <span class="font-selected-preview" id="font-selected-preview">Inter</span>
-          <div class="font-dropdown" id="font-dropdown"></div>
+          <div class="font-trigger" id="font-trigger" onclick="toggleFontDropdown()">
+            <svg class="font-trigger-icon" width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4" stroke="currentColor" stroke-width="1.3"/><path d="M10 10l2.5 2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            <span class="font-trigger-name" id="font-trigger-name" style="font-family:'Inter',sans-serif">Inter</span>
+          </div>
+          <div class="font-dropdown" id="font-dropdown">
+            <div class="font-dropdown-search">
+              <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4" stroke="currentColor" stroke-width="1.3"/><path d="M10 10l2.5 2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+              <input id="font-search" type="text" placeholder="Buscar fonte…" autocomplete="off" oninput="filterFonts(this.value)" />
+            </div>
+            <div class="font-list" id="font-list"></div>
+          </div>
         </div>
       </div>
 

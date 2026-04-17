@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener('click', e => {
   if (!e.target.closest('#font-picker')) {
     document.getElementById('font-dropdown')?.classList.remove('open');
+    document.getElementById('font-trigger')?.classList.remove('open');
   }
 });
 
@@ -45,14 +46,24 @@ let state = {
 };
 
 function initFontPicker() {
-  const dropdown = document.getElementById('font-dropdown');
-  dropdown.innerHTML = FONTS.map(f =>
+  const list = document.getElementById('font-list');
+  list.innerHTML = FONTS.map(f =>
     `<div class="font-option${f === 'Inter' ? ' selected' : ''}" style="font-family:'${f}',sans-serif" data-font="${f}" onclick="selectFont('${f}')">${f}</div>`
   ).join('');
 }
 
-function openFontDropdown() {
-  document.getElementById('font-dropdown').classList.add('open');
+function toggleFontDropdown() {
+  const dropdown = document.getElementById('font-dropdown');
+  const trigger  = document.getElementById('font-trigger');
+  const isOpen   = dropdown.classList.contains('open');
+  if (isOpen) {
+    dropdown.classList.remove('open');
+    trigger.classList.remove('open');
+  } else {
+    dropdown.classList.add('open');
+    trigger.classList.add('open');
+    document.getElementById('font-search').focus();
+  }
 }
 
 function filterFonts(q) {
@@ -60,18 +71,19 @@ function filterFonts(q) {
   document.querySelectorAll('.font-option').forEach(el => {
     el.classList.toggle('hidden', !el.dataset.font.toLowerCase().includes(search));
   });
-  document.getElementById('font-dropdown').classList.add('open');
 }
 
 function selectFont(name) {
   state.fontFamily = name;
   document.getElementById('font-search').value = '';
-  document.getElementById('font-selected-preview').textContent = name;
-  document.getElementById('font-selected-preview').style.fontFamily = `'${name}', sans-serif`;
+  const triggerName = document.getElementById('font-trigger-name');
+  triggerName.textContent = name;
+  triggerName.style.fontFamily = `'${name}', sans-serif`;
   document.querySelectorAll('.font-option').forEach(el =>
     el.classList.toggle('selected', el.dataset.font === name)
   );
   document.getElementById('font-dropdown').classList.remove('open');
+  document.getElementById('font-trigger').classList.remove('open');
   filterFonts('');
 }
 
