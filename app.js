@@ -45,11 +45,15 @@ let state = {
   fontFamily: 'Inter',
 };
 
+let fontPickerReady = false;
+
 function initFontPicker() {
   const list = document.getElementById('font-list');
+  if (!list || fontPickerReady) return;
   list.innerHTML = FONTS.map(f =>
-    `<div class="font-option${f === 'Inter' ? ' selected' : ''}" style="font-family:'${f}',sans-serif" data-font="${f}" onclick="selectFont('${f}')">${f}</div>`
+    `<div class="font-option${f === state.fontFamily ? ' selected' : ''}" style="font-family:'${f}',sans-serif" data-font="${f}" onclick="selectFont('${f}')">${f}</div>`
   ).join('');
+  fontPickerReady = true;
 }
 
 function toggleFontDropdown() {
@@ -60,9 +64,10 @@ function toggleFontDropdown() {
     dropdown.classList.remove('open');
     trigger.classList.remove('open');
   } else {
+    initFontPicker();
     dropdown.classList.add('open');
     trigger.classList.add('open');
-    document.getElementById('font-search').focus();
+    setTimeout(() => document.getElementById('font-search')?.focus(), 50);
   }
 }
 
