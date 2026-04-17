@@ -90,7 +90,58 @@
       border-radius: 6px;
     }
 
-    select[multiple] { height: 120px; }
+    .checkbox-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 8px;
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #111;
+      border: 1px solid #2a2a2a;
+      border-radius: 8px;
+      padding: 9px 12px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      user-select: none;
+    }
+
+    .checkbox-item:hover { border-color: #444; }
+
+    .checkbox-item input[type="checkbox"] { display: none; }
+
+    .checkbox-item .check {
+      width: 16px; height: 16px;
+      border: 1.5px solid #444;
+      border-radius: 4px;
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .checkbox-item.selected {
+      border-color: #fff;
+      background: #1e1e1e;
+    }
+
+    .checkbox-item.selected .check {
+      background: #fff;
+      border-color: #fff;
+    }
+
+    .checkbox-item.selected .check::after {
+      content: '';
+      width: 9px; height: 5px;
+      border-left: 2px solid #000;
+      border-bottom: 2px solid #000;
+      transform: rotate(-45deg) translateY(-1px);
+      display: block;
+    }
+
+    .checkbox-item span { font-size: 13px; color: #ccc; }
 
     .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
@@ -176,23 +227,23 @@
       </div>
 
       <div class="field">
-        <label>Segmento(s) da marca * (segure Ctrl/Cmd para múltiplos)</label>
-        <select id="segments" multiple>
-          <option value="APPAREL">Moda e vestuário</option>
-          <option value="BEAUTY">Beleza e cosméticos</option>
-          <option value="ECOMMERCE">E-commerce</option>
-          <option value="EDUCATION">Educação</option>
-          <option value="ENTERTAINMENT">Entretenimento</option>
-          <option value="FOOD_AND_GROCERY">Alimentação</option>
-          <option value="HEALTH">Saúde e bem-estar</option>
-          <option value="HOME_AND_GARDEN">Casa e decoração</option>
-          <option value="MUSIC">Música</option>
-          <option value="PROFESSIONAL_SERVICES">Serviços profissionais</option>
-          <option value="RETAIL">Varejo</option>
-          <option value="SPORTS">Esportes</option>
-          <option value="TECHNOLOGY">Tecnologia</option>
-          <option value="TRAVEL">Viagem e turismo</option>
-        </select>
+        <label>Segmento(s) da marca *</label>
+        <div class="checkbox-grid" id="segments">
+          <label class="checkbox-item" onclick="toggleSegment(this)"><input type="checkbox" value="APPAREL" /><div class="check"></div><span>Moda e vestuário</span></label>
+          <label class="checkbox-item" onclick="toggleSegment(this)"><input type="checkbox" value="BEAUTY" /><div class="check"></div><span>Beleza e cosméticos</span></label>
+          <label class="checkbox-item" onclick="toggleSegment(this)"><input type="checkbox" value="ECOMMERCE" /><div class="check"></div><span>E-commerce</span></label>
+          <label class="checkbox-item" onclick="toggleSegment(this)"><input type="checkbox" value="EDUCATION" /><div class="check"></div><span>Educação</span></label>
+          <label class="checkbox-item" onclick="toggleSegment(this)"><input type="checkbox" value="ENTERTAINMENT" /><div class="check"></div><span>Entretenimento</span></label>
+          <label class="checkbox-item" onclick="toggleSegment(this)"><input type="checkbox" value="FOOD_AND_GROCERY" /><div class="check"></div><span>Alimentação</span></label>
+          <label class="checkbox-item" onclick="toggleSegment(this)"><input type="checkbox" value="HEALTH" /><div class="check"></div><span>Saúde e bem-estar</span></label>
+          <label class="checkbox-item" onclick="toggleSegment(this)"><input type="checkbox" value="HOME_AND_GARDEN" /><div class="check"></div><span>Casa e decoração</span></label>
+          <label class="checkbox-item" onclick="toggleSegment(this)"><input type="checkbox" value="MUSIC" /><div class="check"></div><span>Música</span></label>
+          <label class="checkbox-item" onclick="toggleSegment(this)"><input type="checkbox" value="PROFESSIONAL_SERVICES" /><div class="check"></div><span>Serviços profissionais</span></label>
+          <label class="checkbox-item" onclick="toggleSegment(this)"><input type="checkbox" value="RETAIL" /><div class="check"></div><span>Varejo</span></label>
+          <label class="checkbox-item" onclick="toggleSegment(this)"><input type="checkbox" value="SPORTS" /><div class="check"></div><span>Esportes</span></label>
+          <label class="checkbox-item" onclick="toggleSegment(this)"><input type="checkbox" value="TECHNOLOGY" /><div class="check"></div><span>Tecnologia</span></label>
+          <label class="checkbox-item" onclick="toggleSegment(this)"><input type="checkbox" value="TRAVEL" /><div class="check"></div><span>Viagem e turismo</span></label>
+        </div>
       </div>
 
       <div class="field">

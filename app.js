@@ -1,5 +1,11 @@
 const API = 'https://ads-manager-6ijz.onrender.com';
 
+function toggleSegment(el) {
+  const cb = el.querySelector('input[type="checkbox"]');
+  cb.checked = !cb.checked;
+  el.classList.toggle('selected', cb.checked);
+}
+
 let state = {
   photoIds: [],
   logoId: null,
@@ -38,7 +44,7 @@ function setStatus(id, msg, type = '') {
 
 async function startAnalysis() {
   const brandName    = document.getElementById('brand-name').value.trim();
-  const segments     = Array.from(document.getElementById('segments').selectedOptions).map(o => o.value);
+  const segments     = Array.from(document.querySelectorAll('#segments input:checked')).map(o => o.value);
   const instagramUrl = document.getElementById('instagram-url').value.trim();
   const photosInput  = document.getElementById('photos-input');
   const logoInput    = document.getElementById('logo-input');
