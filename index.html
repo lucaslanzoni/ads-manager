@@ -516,6 +516,67 @@
     .font-option.selected { color: var(--accent); background: var(--accent-dim); }
     .font-option.hidden { display: none; }
 
+    /* ── TEMPLATE GUIDE ── */
+    .template-guide {
+      display: flex;
+      align-items: flex-end;
+      gap: 20px;
+      margin-top: 12px;
+      padding: 14px 16px;
+      background: rgba(0,0,0,0.18);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+    }
+
+    .guide-formats {
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+      flex-shrink: 0;
+    }
+
+    .guide-format {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .guide-format svg { display: block; border-radius: 3px; overflow: hidden; }
+
+    .guide-format-label {
+      font-size: 9px;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+
+    .guide-legend {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding-left: 4px;
+    }
+
+    .guide-legend-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 11px;
+      color: var(--text-3);
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: .02em;
+    }
+
+    .guide-legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
     /* ── CAPTIONS ── */
     .captions-section {
       margin-top: 24px;
@@ -786,6 +847,71 @@
           <div class="upload-hint">JPG · PNG · WEBP · até 20MB · máx. 10 arquivos</div>
         </div>
         <div class="preview-grid" id="photos-preview"></div>
+
+        <!-- Template visual guide -->
+        <div class="template-guide">
+          <div class="guide-formats">
+            <!-- Feed 1:1 -->
+            <div class="guide-format">
+              <svg width="56" height="56" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg">
+                <!-- photo zone -->
+                <rect x="0" y="0" width="56" height="33" fill="#22222a"/>
+                <!-- subtle mountain silhouette -->
+                <polygon points="8,26 18,14 26,21 34,11 48,26" fill="#2e2e3a"/>
+                <!-- sun circle -->
+                <circle cx="44" cy="9" r="4" fill="#2e2e3a"/>
+                <!-- accent line -->
+                <rect x="0" y="33" width="56" height="3" fill="#c8ff00"/>
+                <!-- text zone -->
+                <rect x="0" y="36" width="56" height="20" fill="#0a0a0c"/>
+                <!-- logo placeholder -->
+                <rect x="5" y="39" width="14" height="3" rx="1" fill="#2a2a34"/>
+                <!-- headline placeholder -->
+                <rect x="5" y="45" width="42" height="4" rx="1.5" fill="#3a3a48"/>
+                <!-- copy placeholder -->
+                <rect x="5" y="52" width="30" height="2.5" rx="1" fill="#2a2a34"/>
+              </svg>
+              <span class="guide-format-label">Feed 1:1</span>
+            </div>
+            <!-- Stories 9:16 -->
+            <div class="guide-format">
+              <svg width="32" height="56" viewBox="0 0 32 56" xmlns="http://www.w3.org/2000/svg">
+                <!-- photo zone -->
+                <rect x="0" y="0" width="32" height="33" fill="#22222a"/>
+                <!-- subtle mountain silhouette -->
+                <polygon points="2,26 9,16 14,21 20,12 30,26" fill="#2e2e3a"/>
+                <!-- sun circle -->
+                <circle cx="26" cy="7" r="3" fill="#2e2e3a"/>
+                <!-- accent line -->
+                <rect x="0" y="33" width="32" height="3" fill="#c8ff00"/>
+                <!-- text zone -->
+                <rect x="0" y="36" width="32" height="20" fill="#0a0a0c"/>
+                <!-- logo placeholder -->
+                <rect x="4" y="39" width="10" height="2.5" rx="1" fill="#2a2a34"/>
+                <!-- headline placeholder -->
+                <rect x="4" y="44" width="24" height="4" rx="1.5" fill="#3a3a48"/>
+                <!-- copy placeholder -->
+                <rect x="4" y="51" width="17" height="2.5" rx="1" fill="#2a2a34"/>
+              </svg>
+              <span class="guide-format-label">Stories 9:16</span>
+            </div>
+          </div>
+          <!-- Legend -->
+          <div class="guide-legend">
+            <div class="guide-legend-row">
+              <div class="guide-legend-dot" style="background:#22222a;border:1px solid #3a3a48"></div>
+              Foto (60% superior)
+            </div>
+            <div class="guide-legend-row">
+              <div class="guide-legend-dot" style="background:#c8ff00"></div>
+              Linha de cor da marca
+            </div>
+            <div class="guide-legend-row">
+              <div class="guide-legend-dot" style="background:#0a0a0c;border:1px solid #2a2a34"></div>
+              Headline + copy (40% inferior)
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Logo -->
