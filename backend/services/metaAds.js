@@ -24,8 +24,10 @@ function post(url, body) {
       res.on('end', () => {
         try {
           const parsed = JSON.parse(out);
-          if (parsed.error) reject(new Error(parsed.error.message));
-          else resolve(parsed);
+          if (parsed.error) {
+            console.error('Meta API error:', JSON.stringify(parsed.error));
+            reject(new Error(parsed.error.message));
+          } else resolve(parsed);
         } catch (e) { reject(e); }
       });
     });
