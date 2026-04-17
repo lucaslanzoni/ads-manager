@@ -32,11 +32,21 @@ document.addEventListener('click', e => {
 });
 
 const FONTS = [
-  'Inter','Montserrat','Poppins','Raleway','Work Sans','DM Sans','Space Grotesk','Syne',
-  'Plus Jakarta Sans','Bricolage Grotesque','Urbanist','Nunito','Lato','Source Sans 3',
-  'PT Sans','Roboto Condensed','Barlow Condensed','Exo 2','Oswald','Bebas Neue',
-  'Fjalla One','Archivo Black','Libre Baskerville','Merriweather','Cormorant Garamond',
-  'Crimson Pro','DM Serif Display','Fraunces','Bitter','Playfair Display',
+  // Sans-serif
+  'Inter','Roboto','Open Sans','Lato','Montserrat','Poppins','Raleway','Work Sans',
+  'DM Sans','Space Grotesk','Syne','Plus Jakarta Sans','Bricolage Grotesque','Urbanist',
+  'Nunito','Nunito Sans','Manrope','Outfit','Figtree','Mulish','Cabin','Quicksand',
+  'Josefin Sans','Source Sans 3','PT Sans','Barlow','IBM Plex Sans','Kanit',
+  // Condensadas / Display
+  'Roboto Condensed','Barlow Condensed','Oswald','Exo 2','Bebas Neue','Fjalla One',
+  'Archivo Black','Teko','Antonio','Big Shoulders Display','Unbounded','Chakra Petch',
+  'Titillium Web','Rajdhani',
+  // Serifadas
+  'Playfair Display','Merriweather','Lora','EB Garamond','Libre Baskerville',
+  'Cormorant Garamond','Crimson Pro','Spectral','Bitter','Cardo',
+  'DM Serif Display','Fraunces','Cinzel',
+  // Script / Cursiva
+  'Dancing Script','Pacifico','Caveat','Lobster','Permanent Marker',
 ];
 
 let state = {
