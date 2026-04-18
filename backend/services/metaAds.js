@@ -7,14 +7,14 @@ const AD_ACCOUNT = process.env.META_AD_ACCOUNT_ID;
 
 function post(url, body) {
   return new Promise((resolve, reject) => {
-    const data = new URLSearchParams(body).toString();
+    const data = JSON.stringify(body);
     const urlObj = new URL(url);
     const options = {
       hostname: urlObj.hostname,
       path: urlObj.pathname + urlObj.search,
       method: 'POST',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'application/json',
         'Content-Length': Buffer.byteLength(data),
       },
     };
@@ -57,7 +57,7 @@ async function createCampaign({ name, objective = 'OUTCOME_AWARENESS' }) {
       name,
       objective,
       status: 'PAUSED',
-      special_ad_categories: '[]',
+      special_ad_categories: [],
       access_token: TOKEN,
     }
   );
@@ -66,9 +66,9 @@ async function createCampaign({ name, objective = 'OUTCOME_AWARENESS' }) {
 
 async function createAdSet({ campaignId, name, budget, startTime, endTime, network }) {
   const placements = {
-    instagram: { publisher_platforms: '["instagram"]', instagram_positions: '["stream","story"]' },
-    facebook:  { publisher_platforms: '["facebook"]',  facebook_positions: '["feed","story"]' },
-    both:      { publisher_platforms: '["instagram","facebook"]', instagram_positions: '["stream","story"]', facebook_positions: '["feed","story"]' },
+    instagram: { publisher_platforms: ['instagram'], instagram_positions: ['stream','story'] },
+    facebook:  { publisher_platforms: ['facebook'],  facebook_positions: ['feed','story'] },
+    both:      { publisher_platforms: ['instagram','facebook'], instagram_positions: ['stream','story'], facebook_positions: ['feed','story'] },
   };
 
   const result = await post(
@@ -76,16 +76,16 @@ async function createAdSet({ campaignId, name, budget, startTime, endTime, netwo
     {
       name,
       campaign_id: campaignId,
-      daily_budget: String(Math.round(budget * 100)),
+      daily_budget: Math.round(budget * 100),
       start_time: startTime,
       end_time: endTime,
       billing_event: 'IMPRESSIONS',
       optimization_goal: 'REACH',
       status: 'PAUSED',
-      is_adset_budget_sharing_enabled: 'false',
-      targeting: JSON.stringify({ geo_locations: { countries: ['BR'] } }),
+      is_adset_budget_sharing_enabled: false,
+      targeting: { geo_locations: { countries: ['BR'] } },
       access_token: TOKEN,
-      ...placements[network] || placements.both,
+      ...(placements[network] || placements.both),
     }
   );
   return result.id;
@@ -96,7 +96,7 @@ async function createAdCreative({ name, imageHash, headline, body, pageId }) {
     `https://graph.facebook.com/v19.0/${AD_ACCOUNT}/adcreatives`,
     {
       name,
-      object_story_spec: JSON.stringify({
+      object_story_spec: {
         page_id: pageId,
         link_data: {
           image_hash: imageHash,
@@ -104,7 +104,7 @@ async function createAdCreative({ name, imageHash, headline, body, pageId }) {
           name: headline,
           call_to_action: { type: 'LEARN_MORE' },
         },
-      }),
+      },
       access_token: TOKEN,
     }
   );
