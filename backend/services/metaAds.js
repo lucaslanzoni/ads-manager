@@ -61,6 +61,7 @@ async function createCampaign({ name, objective = 'OUTCOME_AWARENESS', dailyBudg
       status: 'PAUSED',
       special_ad_categories: [],
       daily_budget: Math.round(dailyBudget * 100),
+      bid_strategy: 'LOWEST_COST_WITHOUT_CAP',
       access_token: TOKEN,
     }
   );
@@ -83,7 +84,6 @@ async function createAdSet({ campaignId, name, startTime, endTime, network }) {
       end_time: endTime,
       billing_event: 'IMPRESSIONS',
       optimization_goal: 'REACH',
-      bid_strategy: 'LOWEST_COST_WITHOUT_CAP',
       status: 'PAUSED',
       is_adset_budget_sharing_enabled: true,
       targeting: { geo_locations: { countries: ['BR'] } },
