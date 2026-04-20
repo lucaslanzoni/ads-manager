@@ -293,14 +293,16 @@ function showPublish() {
 }
 
 async function publishAds() {
-  const pageId      = document.getElementById('page-id').value.trim();
-  const network     = document.getElementById('network').value;
-  const dailyBudget = parseFloat(document.getElementById('daily-budget').value);
-  const startVal    = document.getElementById('start-date').value;
-  const endVal      = document.getElementById('end-date').value;
-  const brandName   = document.getElementById('brand-name').value.trim();
+  const pageId         = document.getElementById('page-id').value.trim();
+  const destinationUrl = document.getElementById('destination-url').value.trim();
+  const network        = document.getElementById('network').value;
+  const dailyBudget    = parseFloat(document.getElementById('daily-budget').value);
+  const startVal       = document.getElementById('start-date').value;
+  const endVal         = document.getElementById('end-date').value;
+  const brandName      = document.getElementById('brand-name').value.trim();
 
   if (!pageId)            return setStatus('status-publish', 'Informe o Page ID.', 'error');
+  if (!destinationUrl)    return setStatus('status-publish', 'Informe a URL de destino.', 'error');
   if (!dailyBudget)       return setStatus('status-publish', 'Informe o orçamento diário.', 'error');
   if (!startVal || !endVal) return setStatus('status-publish', 'Selecione as datas de veiculação.', 'error');
 
@@ -329,6 +331,7 @@ async function publishAds() {
       startDate: startDate.toISOString(),
       endDate: endDate.toISOString(),
       pageId,
+      destinationUrl,
       captions,
     }),
   });
