@@ -28,7 +28,8 @@ function post(url, body) {
           const parsed = JSON.parse(out);
           if (parsed.error) {
             console.error('Meta API error:', JSON.stringify(parsed.error));
-            reject(new Error(parsed.error.message));
+            const msg = parsed.error.error_user_msg || parsed.error.error_user_title || parsed.error.message;
+            reject(new Error(msg));
           } else resolve(parsed);
         } catch (e) { reject(e); }
       });
