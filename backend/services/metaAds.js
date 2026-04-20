@@ -40,9 +40,8 @@ function post(url, body) {
   });
 }
 
-async function uploadImage(imagePath) {
-  const abs = path.resolve(imagePath);
-  const imageData = fs.readFileSync(abs).toString('base64');
+async function uploadImage(imagePath, base64Data) {
+  const imageData = base64Data || fs.readFileSync(path.resolve(imagePath)).toString('base64');
 
   const result = await post(
     `https://graph.facebook.com/v21.0/${AD_ACCOUNT}/adimages`,
@@ -130,7 +129,7 @@ async function createAd({ adSetId, creativeId, name }) {
   return result.id;
 }
 
-async function publishCampaign({ sessionId, images, brief, brandName, network, dailyBudget, startDate, endDate, pageId, destinationUrl, captions = {} }) {
+async function publishCampaign({ sessionId, images, imageData = {}, brief, brandName, network, dailyBudget, startDate, endDate, pageId, destinationUrl, captions = {} }) {
   const campaignId = await createCampaign({ name: `${brandName} — ${new Date().toLocaleDateString('pt-BR')}`, dailyBudget });
   const adSetId    = await createAdSet({ campaignId, name: `${brandName} AdSet`, startTime: startDate, endTime: endDate, network });
 
@@ -142,7 +141,7 @@ async function publishCampaign({ sessionId, images, brief, brandName, network, d
 
     const caption    = captions[variation.id] || variation.caption || variation.copy || '';
     const imagePath  = path.join(__dirname, '../output', sessionId, feedImage.filename);
-    const imageHash  = await uploadImage(imagePath);
+    const imageHash  = await uploadImage(imagePath, imageData[feedImage.filename]);
     const creativeId = await createAdCreative({ name: `${brandName} ${variation.id}`, imageHash, headline: variation.headline, body: caption, pageId, destinationUrl });
     const adId       = await createAd({ adSetId, creativeId, name: `${brandName} ${variation.id} Ad` });
 

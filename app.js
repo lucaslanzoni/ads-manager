@@ -199,8 +199,20 @@ async function generateImages() {
     return;
   }
 
-  state.sessionId = generated.sessionId;
-  state.images    = generated.images;
+  state.sessionId  = generated.sessionId;
+  state.images     = generated.images;
+  state.imageData  = {};
+
+  await Promise.all(generated.images.map(async img => {
+    const r = await fetch(`${API}${img.url}`);
+    const blob = await r.blob();
+    const b64 = await new Promise(res => {
+      const reader = new FileReader();
+      reader.onload = () => res(reader.result.split(',')[1]);
+      reader.readAsDataURL(blob);
+    });
+    state.imageData[img.filename] = b64;
+  }));
 
   renderPreviews(generated.images);
   document.getElementById('step-previews').style.display = 'block';
@@ -324,6 +336,7 @@ async function publishAds() {
     body: JSON.stringify({
       sessionId: state.sessionId,
       images: state.images,
+      imageData: state.imageData,
       brief: state.brief,
       brandName,
       network,
