@@ -7,8 +7,10 @@ const AD_ACCOUNT = process.env.META_AD_ACCOUNT_ID;
 
 function post(url, body) {
   return new Promise((resolve, reject) => {
-    const data = JSON.stringify(body);
+    const { access_token, ...rest } = body;
     const urlObj = new URL(url);
+    urlObj.searchParams.set('access_token', access_token);
+    const data = JSON.stringify(rest);
     const options = {
       hostname: urlObj.hostname,
       path: urlObj.pathname + urlObj.search,
