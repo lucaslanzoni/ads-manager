@@ -44,7 +44,7 @@ async function uploadImage(imagePath) {
   const imageData = fs.readFileSync(abs).toString('base64');
 
   const result = await post(
-    `https://graph.facebook.com/v19.0/${AD_ACCOUNT}/adimages`,
+    `https://graph.facebook.com/v21.0/${AD_ACCOUNT}/adimages`,
     { bytes: imageData, access_token: TOKEN }
   );
 
@@ -52,21 +52,22 @@ async function uploadImage(imagePath) {
   return hash;
 }
 
-async function createCampaign({ name, objective = 'OUTCOME_AWARENESS' }) {
+async function createCampaign({ name, objective = 'OUTCOME_AWARENESS', dailyBudget }) {
   const result = await post(
-    `https://graph.facebook.com/v19.0/${AD_ACCOUNT}/campaigns`,
+    `https://graph.facebook.com/v21.0/${AD_ACCOUNT}/campaigns`,
     {
       name,
       objective,
       status: 'PAUSED',
       special_ad_categories: [],
+      daily_budget: Math.round(dailyBudget * 100),
       access_token: TOKEN,
     }
   );
   return result.id;
 }
 
-async function createAdSet({ campaignId, name, budget, startTime, endTime, network }) {
+async function createAdSet({ campaignId, name, startTime, endTime, network }) {
   const placements = {
     instagram: { publisher_platforms: ['instagram'], instagram_positions: ['stream','story'] },
     facebook:  { publisher_platforms: ['facebook'],  facebook_positions: ['feed','story'] },
@@ -74,17 +75,16 @@ async function createAdSet({ campaignId, name, budget, startTime, endTime, netwo
   };
 
   const result = await post(
-    `https://graph.facebook.com/v19.0/${AD_ACCOUNT}/adsets`,
+    `https://graph.facebook.com/v21.0/${AD_ACCOUNT}/adsets`,
     {
       name,
       campaign_id: campaignId,
-      daily_budget: Math.round(budget * 100),
       start_time: startTime,
       end_time: endTime,
       billing_event: 'IMPRESSIONS',
       optimization_goal: 'REACH',
       status: 'PAUSED',
-      is_adset_budget_sharing_enabled: false,
+      is_adset_budget_sharing_enabled: true,
       targeting: { geo_locations: { countries: ['BR'] } },
       access_token: TOKEN,
       ...(placements[network] || placements.both),
@@ -95,7 +95,7 @@ async function createAdSet({ campaignId, name, budget, startTime, endTime, netwo
 
 async function createAdCreative({ name, imageHash, headline, body, pageId }) {
   const result = await post(
-    `https://graph.facebook.com/v19.0/${AD_ACCOUNT}/adcreatives`,
+    `https://graph.facebook.com/v21.0/${AD_ACCOUNT}/adcreatives`,
     {
       name,
       object_story_spec: {
@@ -115,11 +115,11 @@ async function createAdCreative({ name, imageHash, headline, body, pageId }) {
 
 async function createAd({ adSetId, creativeId, name }) {
   const result = await post(
-    `https://graph.facebook.com/v19.0/${AD_ACCOUNT}/ads`,
+    `https://graph.facebook.com/v21.0/${AD_ACCOUNT}/ads`,
     {
       name,
       adset_id: adSetId,
-      creative: JSON.stringify({ creative_id: creativeId }),
+      creative: { creative_id: creativeId },
       status: 'PAUSED',
       access_token: TOKEN,
     }
@@ -128,8 +128,8 @@ async function createAd({ adSetId, creativeId, name }) {
 }
 
 async function publishCampaign({ sessionId, images, brief, brandName, network, dailyBudget, startDate, endDate, pageId, captions = {} }) {
-  const campaignId = await createCampaign({ name: `${brandName} — ${new Date().toLocaleDateString('pt-BR')}` });
-  const adSetId    = await createAdSet({ campaignId, name: `${brandName} AdSet`, budget: dailyBudget, startTime: startDate, endTime: endDate, network });
+  const campaignId = await createCampaign({ name: `${brandName} — ${new Date().toLocaleDateString('pt-BR')}`, dailyBudget });
+  const adSetId    = await createAdSet({ campaignId, name: `${brandName} AdSet`, startTime: startDate, endTime: endDate, network });
 
   const ads = [];
 
