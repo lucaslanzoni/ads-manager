@@ -6,8 +6,11 @@ const router = express.Router();
 router.post('/', async (req, res) => {
   const { sessionId, images, brief, brandName, network, dailyBudget, startDate, endDate, pageId, destinationUrl, captions = {} } = req.body;
 
-  if (!sessionId || !images || !brief || !brandName || !network || !dailyBudget || !startDate || !endDate || !pageId || !destinationUrl) {
-    return res.status(400).json({ error: 'Campos obrigatórios faltando' });
+  const missing = { sessionId, images, brief, brandName, network, dailyBudget, startDate, endDate, pageId, destinationUrl };
+  const missingKeys = Object.entries(missing).filter(([, v]) => !v).map(([k]) => k);
+  if (missingKeys.length) {
+    console.error('Campos faltando:', missingKeys);
+    return res.status(400).json({ error: `Campos obrigatórios faltando: ${missingKeys.join(', ')}` });
   }
 
   try {
